@@ -35,7 +35,7 @@ Multi-line comments look like this.
 
 // The "package" keyword works in the same way as in Java.
 // The package name is used to give us the fully qualified name (FQN) for a class, object, interface, or function
-//package com.example.kotlin
+// package com.example.kotlin
 
 // Imports
 // import com.packt.myproject.Foo
@@ -45,39 +45,43 @@ Multi-line comments look like this.
 /*
 The entry point to a Kotlin program is a function named "main".
 The function is passed an array containing any command line arguments.
+Functions and variables in Kotlin may be declared at "top-level", i.e directly inside a package
 */
 fun main(args: Array<String>) {
 
-    // [Vals and vars]
+    // [BASIC SYNTAX]
+    //-----------------
     // Declaring values is done using either "var" or "val".
     // "val" declarations cannot be reassigned, whereas "vars" can.
     val fooVal = 10 // we cannot later reassign fooVal to something else
     var fooVar = 10
     fooVar = 20 // fooVar can be reassigned
 
-    // [Type inference]
-    // In most cases, Kotlin can determine what the type of a variable is,
-    // so we don't have to explicitly specify it every time.
-    // We can explicitly declare the type of a variable like so:
+    // In most cases, Kotlin can determine what the type of a variable is, so we don't have to
+    // explicitly specify it every time. We can explicitly declare the type of a variable like so:
     val foo: Int = 7
     val bar = 10
     val hello = "Hello"
 
     // [Basic types]
-    val double = 64.0
-    val float = 32F
-    val long = 64L
-    val int = 32
-    val short = 16
-    val byte = 8
-    val hexadecimal = 0x16
-    val binary = 0b101
+    val double: Double = 64.0
+    val float: Float = 32F
+    val long: Long = 64L
+    val int: Int = 32
+    val short: Short = 16
+    val byte: Byte = 8
+    val hexadecimal: Int = 0x16
+    val binary: Int = 0b101
+    val char: Char = 'a'
+
+    // Underscores can be used to make large numbers more readable:
+    val million = 1_000_000
 
     // Conversion must be invoked explicitly
     val otherLong = int.toLong()
     val direct = 25.toLong()
 
-    // [Ranges]
+    // [RANGES]
     // A range is defined as an interval that has a start value and an end value.
     val oneToNine = 1..9
     // Once a range is created, the in operator can be used to test whether a given value is
@@ -87,16 +91,15 @@ fun main(args: Array<String>) {
     val tenToOne = 10.downTo(1)
     println("${tenToOne.first} - ${tenToOne.last}") // => 10 - 1
 
-    // [Explicit casting]
+    // [EXPLICIT CASTING]
     val any: Any = "I am a string"
     val string = any as String // true
     val file: File? = any as? File // null (avoid ClassCastException)
     println(string.takeLast(4)) // => ring
 
-    // [Smart casts]
+    // [SMART CASTS]
     // We can check if an object is a particular type by using the "is" operator.
-    // If an object passes a type check then it can be used as that type without
-    // explicitly casting it.
+    // If an object passes a type check then it can be used as that type without explicitly casting it.
     fun smartCastExample(x: Any): Boolean {
         if (x is Boolean) {
             // x is automatically cast to Boolean
@@ -125,9 +128,8 @@ fun main(args: Array<String>) {
         else -> false
     }
 
-    // [Strings]
-    // Strings are immutable.
-    // Strings can be represented in a similar way as in Java.
+    // [STRINGS]
+    // Strings are immutable sequences of characters & can be represented in a similar way as in Java.
     // Escaping is done with a backslash.
     val fooString = "My String Is Here!"
     val barString = "Printing on a new line?\nNo Problem!"
@@ -154,11 +156,11 @@ fun main(args: Array<String>) {
     val fooTemplateString = "$fooString has ${fooString.length} characters"
     println(fooTemplateString) // => My String Is Here! has 18 characters 
 
+    // [NULLABLE]
     // For a variable to hold null it must be explicitly specified as nullable.
     // A variable can be specified as nullable by appending a ? to its type.
     // We can access a nullable variable by using the ?. operator.
-    // We can use the ?: operator to specify an alternative value to use
-    // if a variable is null.
+    // We can use the ?: operator to specify an alternative value to use if a variable is null.
     var fooNullable: String? = "abc"
     println(fooNullable?.length) // => 3
     println(fooNullable?.length ?: -1) // => 3
@@ -166,6 +168,7 @@ fun main(args: Array<String>) {
     println(fooNullable?.length) // => null
     println(fooNullable?.length ?: -1) // => -1
 
+    // [CONTROL FLOW]
     // A "for" loop can be used with anything that provides an iterator.
     for (c in "hello") {
         println(c)
@@ -181,7 +184,6 @@ fun main(args: Array<String>) {
         println(ctr)
         ctr++
     } while (ctr < 10)
-
 
     // "if" can be used as an expression that returns a value.
     // For this reason the ternary ?: operator is not needed in Kotlin.
@@ -212,7 +214,9 @@ fun main(args: Array<String>) {
     }
     println(result)
 
-    // [Functions]
+
+    // [FUNCTIONS]
+    //---------------
     // Functions can be declared using the "fun" keyword.
     // Function arguments are specified in brackets after the function name.
     // Function arguments can optionally have a default value.
@@ -256,8 +260,17 @@ fun main(args: Array<String>) {
     println(even(6)) // => true
     println(even(7)) // => false
 
+    // Extensions are a way to add new functionality to a class.
+    // This is similar to C# extension methods.
+    fun String.remove(c: Char): String {
+        return this.filter { it != c }
+    }
+    println("Hello, world!".remove('l')) // => Heo, word!
+
+    // [FUNCTION TYPES & LAMBDAS]
     // A function type is a type consisted of a function signature and function return type that
     // are separated by -> operator.
+    //
     // Example of a type for a function that takes no parameters and returns a Unit
     // () -> Unit
     //
@@ -273,28 +286,56 @@ fun main(args: Array<String>) {
     // Because a function type is just a type, it means that you can assign it to a variable, you can
     // pass it as a function argument and you can return it from a function
     val morning: (String) -> Unit = { x -> println(x) }
-    morning("good morning")
+    morning("good morning") // => good morning
 
+    // lambda function with two parameters
+    val sum: (Int, Int) -> Int = { x, y -> x + y }
+    sum(10, 20) // => 30
 
-    // Functions can take functions as arguments and return functions.
-    fun not(f: (Int) -> Boolean): (Int) -> Boolean {
-        return { n -> !f.invoke(n) }
+    // If a lambda has only one parameter then its declaration can be omitted (along with the ->).
+    // The name of the single parameter will be 'it'.
+    val isNegative: (Int) -> Boolean = { it < 0 }
+    isNegative(-5) // => true
+
+    // For unused parameters, use _
+    val unusedSecondParam: (String, Int) -> Boolean = { s, _ ->
+        s.length > 10
     }
+    unusedSecondParam("Hello World", 0) // 0 is unused
+
+    // [HIGHER-ORDER FUNCTIONS]
+    // A higher-order function is a function that takes functions as parameters, or returns a function.
+    // This high-order function returns a function
+    fun isPositive(n: Int): (Int) -> Boolean {
+        return { n > 0 } // return a function. In other words, instead 'return value' we have 'return { function }'
+    }
+    isPositive(10) // => true
+
+    // This high-order function accepts a lambda function { (String) -> Boolean }
+    // This parameter is called 'email' and we can use it as a function that accept a string and returns a boolean
+    fun isAnEmail(email: (String) -> Boolean) {
+        email("myemail@example.com")
+    }
+    isAnEmail({ s: String -> s.contains("@") }) // Here
+    isAnEmail { s: String -> s.contains("@") }
+    isAnEmail { it.contains("@") }
 
     // Named functions can be specified as arguments using the :: operator.
-    val notOdd = not(::odd)
-    val notEven = not(::even)
-    // Lambda expressions can be specified as arguments.
-    val notZero = not { n -> n == 0 }
-
-    // If a lambda has only one parameter
-    // then its declaration can be omitted (along with the ->).
-    // The name of the single parameter will be "it".
-    val notPositive = not { it > 0 }
-    for (i in 0..4) {
-        println("${notOdd(i)} ${notEven(i)} ${notZero(i)} ${notPositive(i)}")
+    fun businessEmail(s: String): Boolean {
+        return s.contains("@") && s.contains("business.com")
     }
+    isAnEmail(::businessEmail)
 
+    // Passing a lambda to the last parameter
+    // In Kotlin, there is a convention that if the last parameter of a function accepts a
+    // function, a lambda expression that is passed as the corresponding argument can be placed
+    // outside the parentheses:
+    val upperCaseLetters = "Hello World".filter({ it.isUpperCase() }) // lambda expression inside parentheses
+    val lowerCaseLetters = "Hello World".filter { it.isLowerCase() } // lambda outside parentheses
+    println("$upperCaseLetters - $lowerCaseLetters") // => HW - elloorld
+
+    // [CLASSES]
+    //-------------
     // The "class" keyword is used to declare classes.
     class ExampleClass(val x: Int) {
         fun memberFunction(y: Int): Int {
@@ -328,6 +369,7 @@ fun main(args: Array<String>) {
     // To create a new instance we call the constructor.
     // Note that Kotlin does not have a "new" keyword.
     val fooExampleClass = ExampleClass(7)
+
     // Member functions can be called using dot notation.
     println(fooExampleClass.memberFunction(4)) // => 11
 
@@ -342,7 +384,7 @@ fun main(args: Array<String>) {
     println("${barAnotherExample.innerClass().accessZ()}") // => Accessing z from a inner class
 
     // Data classes are a concise way to create classes that just hold data.
-    // The "hashCode"/"equals" and "toString" methods are automatically generated.
+    // The "hashCode()", "equals()" and "toString()" methods are automatically generated.
     data class DataClassExample(val x: Int, val y: Int, val z: Int)
 
     val fooData = DataClassExample(1, 2, 4)
@@ -352,6 +394,7 @@ fun main(args: Array<String>) {
     val fooCopy = fooData.copy(y = 100)
     println(fooCopy) // => DataClassExample(x=1, y=100, z=4)
 
+    // [Destructuring data]
     // Objects can be destructured into multiple variables.
     val (a, b, c) = fooCopy
     println("$a $b $c") // => 1 100 4
@@ -378,22 +421,38 @@ fun main(args: Array<String>) {
     }
     println(fooMutableData) // => MutableDataClassExample(x=5, y=6, z=8)
 
-    // [Arrays]
+
+    // [ARRAYS]
+    //------------
+    // An array is represented by the class 'Array' and are invariant, so for example an 'Array<String>'
+    // cannot be assigned to a variable type 'Array<Any>'
     // In Kotlin, we can create an array by using the library function arrayOf():
     val cardNames = arrayOf("Jack", "Queen", "King")
     println(cardNames[1]) // => Queen
+
+    // Iterating over array with 'indices'
     for (index in cardNames.indices) {
         println("Element $index is ${cardNames[index]}")
     }
 
+    // Another way of iterating is possible by using 'withIndex()'
+    for ((index, value) in cardNames.withIndex()) {
+        println("$index - $value")
+    }
+
+    // Create an array with only ints
     val cards = intArrayOf(10, 11, 12)
     println("${cards[1]}") // => 11
+
     // Alternatively, we can create an Array from an initial size and a function, which is used to
     // generate each element:
     val allCards = Array(12, { i -> i + 1 })
     println("${allCards.first()} - ${allCards.last()}") // => 1 - 12
 
-    //We can create a list using the "listOf" function.
+
+    // [COLLECTIONS]
+    //-------------------
+    // We can create a list using the "listOf" function.
     // The list will be immutable - elements cannot be added or removed.
     val fooList = listOf("a", "b", "c")
     println(fooList.size) // => 3
@@ -448,23 +507,9 @@ fun main(args: Array<String>) {
             .groupBy { it % 2 == 0 }
             .mapKeys { if (it.key) "even" else "odd" }
     println(z) // => {odd=[3, 9, 15], even=[6, 12, 18]}
-
-    // Extensions are a way to add new functionality to a class.
-    // This is similar to C# extension methods.
-    fun String.remove(c: Char): String {
-        return this.filter { it != c }
-    }
-    println("Hello, world!".remove('l')) // => Heo, word!
-
-    println(EnumExample.A) // => A
-    println(ObjectExample.hello()) // => Hello
-
-    // Enum classes
-    direction() // => Angle: 270 - Name: South - Ordinal: 2
-    println(Direction.values().size) // => 4
-    println(Direction.valueOf("West").angle) // => 180
 }
 
+// [ENUM]
 // Enum classes are similar to Java enum types.
 enum class EnumExample {
     A, B, C
@@ -482,7 +527,13 @@ fun direction() {
     println("Angle: ${south.angle} - Name: ${south.name} - Ordinal: ${south.ordinal}")
 }
 
+// println(EnumExample.A) // => A
+// direction() // => Angle: 270 - Name: South - Ordinal: 2
+// println(Direction.values().size) // => 4
+// println(Direction.valueOf("West").angle) // => 180
 
+
+// [OBJECT]
 // The "object" keyword can be used to create SINGLETON objects.
 // We cannot instantiate it but we can refer to its unique instance by its name.
 // This is similar to Scala singleton objects.
@@ -491,6 +542,8 @@ object ObjectExample {
         return "Hello"
     }
 }
+
+// println(ObjectExample.hello()) // => Hello
 
 fun useObject() {
     ObjectExample.hello() // => Hello
