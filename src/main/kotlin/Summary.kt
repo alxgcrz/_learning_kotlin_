@@ -16,7 +16,11 @@
  * ***********************************************************************
  */
 
+// Imports
 import java.io.File
+// import com.packt.myproject.Foo
+// import com.packt.otherproject.Foo as Foo2
+// import com.packt.myproject.*
 
 /*
 *   Programming Kotlin - Packt
@@ -37,10 +41,25 @@ Multi-line comments look like this.
 // The package name is used to give us the fully qualified name (FQN) for a class, object, interface, or function
 // package com.example.kotlin
 
-// Imports
-// import com.packt.myproject.Foo
-// import com.packt.otherproject.Foo as Foo2
-// import com.packt.myproject.*
+/*
+Compile the application using the Kotlin compiler:
+    $ kotlinc name.kt -include-runtime -d name.jar
+
+Run the application:
+    $ java -jar name.jar
+
+Running the REPL
+    $ kotlinc-jvm
+
+Using the command line to run scripts (kts):
+    $ kotlinc -script name.kts [params]
+
+Compiling a library without the runtime to use in other Kotlin applications:
+    $ kotlinc name.kt -d name.jar
+
+Run binaries produced by the kotlin compiler:
+    $ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)
+ */
 
 /*
 The entry point to a Kotlin program is a function named "main".
