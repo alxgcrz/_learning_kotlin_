@@ -10,7 +10,7 @@ Ejecutar la consola 'REPL': `$ kotlinc-jvm`
 
 Usar la línea de comandos para ejecutar scripts (.kts): `$ kotlinc -script name.kts [params]`
 
-Compilar una libraría sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
+Compilar una librería sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
 
 Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
@@ -312,12 +312,14 @@ Podemos forzar la creación de arrays del mismo tipo. De esta forma el compilado
 val myArray = arrayOf<Int>(1, 2, 3, 4)
 ```
 
-Otra forma de crea una matriz con solo enteros u otro tipo:
+La librería estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `'intArrayOf()'`, `'longArrayOf()'`, `'charArrayOf()'`, `'doubleArrayOf()'`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
 
 ```kotlin
-val cards = intArrayOf(10, 11, 12)
+val cards = intArrayOf(10, 11, 12) // IntArray
 println("${cards[1]}") // => 11
 ```
+
+Para mejorar la eficiencia y rendimiento del código, cuando se utilicen tipos primitivos hay que utilizar las funciones `'intArrayOf()'`, `'longArrayOf()'`, etc.. en vez de `arrayOf()` para así evitar el coste asociado a las operaciones de 'boxing'/'unboxing'.
 
 Alternativamente, podemos crear una matriz a partir de un tamaño inicial y una función, que se utiliza para generar cada elemento usando el constructor `Array()`:
 
@@ -903,7 +905,7 @@ fun copyAddress(address: Address): Address {
 }
 ```
 
-#### 'Getters' and 'Setters'
+#### 'Getters()' and 'Setters()'
 
 La sintaxis completa de definición de una propiedad en Kotlin:
 
@@ -1649,13 +1651,13 @@ Kotlin proporciona su API de colecciones como una biblioteca estándar construid
 
 **Una lista es una colección ordenada de elementos**. Esta es una colección popular ampliamente utilizada.
 
-Podemos crear una lista usando la función `listOf()`. **La lista será inmutable**. Los elementos no se pueden agregar ni eliminar.
+Podemos crear una **lista inmutable** usando la función `listOf()`. Los elementos no se pueden agregar ni eliminar.
 
 ```kotlin
 val fooList = listOf("a", "b", "c", 1, false)
 val numbers: List<Int> = listOf(1, 2, 3, 4)
 val emptyList: List<String> = emptyList<String>() // lista vacía
-val nonNullsList: List<String> = listOfNotNull(2, 45, 2, null, 5, null) // lista de valores no nulls
+val nonNullsList: List<String> = listOfNotNull(2, 45, 2, null, 5, null) // lista de valores no nulos
 
 println(fooList.size) // => 3
 println(fooList.first()) // => a
@@ -1666,7 +1668,7 @@ println(fooList.indexOf("b")) // 1
 println(fooList[1]) // => b
 ```
 
-Se puede crear una lista mutable utilizando la función `mutableListOf()`:
+Se puede crear una **lista mutable** utilizando la función `mutableListOf()`:
 
 ```kotlin
 val fooMutableList = mutableListOf("a", "b", "c")
@@ -1675,13 +1677,13 @@ println(fooMutableList.last()) // => d
 println(fooMutableList.size) // => 4
 ```
 
-Con la función `arrayListOf()` crea una lista mutable y devuelve un tipo _'ArrayList'_ de la API de colecciones de Java.
+Con la función `'arrayListOf()'` crea una lista mutable y devuelve un tipo _'ArrayList'_ de la API de colecciones de Java.
 
 #### Sets - [Inmutable]
 
 **Un conjunto o 'set' es una colección desordenada de elementos únicos**. En otras palabras, es una colección que no admite duplicados.
 
-Podemos crear un conjunto (o 'set') inmutable utilizando la función `setOf()`:
+Podemos crear un conjunto (o 'set') inmutable utilizando la función `'setOf()'`:
 
 ```kotlin
 val fooSet = setOf("a", "b", "c")
@@ -1689,7 +1691,7 @@ println(fooSet.contains("a")) // => true
 println(fooSet.contains("z")) // => false
 ```
 
-Con la función `mutableSetOf()` podemos crear un conjunto mutable:
+Con la función `'mutableSetOf()'` podemos crear un conjunto mutable:
 
 ```kotlin
 // creates a mutable set of int types only
@@ -1698,15 +1700,15 @@ intsMutableSet.add(8)
 intsMutableSet.remove(3)
 ```
 
-La función `hashSetOf()` retorna un _'HashSet'_ de la API de colecciones de Java el cual almacena los elementos en una tabla 'hash'. Podemos añadir o quitar elementos de este conjunto porque es **mutable**.
+La función `'hashSetOf()'` retorna un _'HashSet'_ de la API de colecciones de Java el cual almacena los elementos en una tabla 'hash'. Podemos añadir o quitar elementos de este conjunto porque es **mutable**.
 
-La función `linkedSetOf()` retorna un _'LinkedHashSet'_ de la API de colecciones de Java. También es un conjunto mutable.
+La función `'linkedSetOf()'` retorna un _'LinkedHashSet'_ de la API de colecciones de Java. También es un conjunto mutable.
 
 #### Maps - [Inmutable]
 
-Los mapas asocian las claves a los valores. Las claves deben ser únicas, pero los valores asociados no necesitan serlo. De esa manera, cada clave se puede usar para identificar de forma única el valor asociado, ya que el mapa se asegura de que no pueda haber claves duplicadas en la colección.
+Los mapas asocian una clave a un valor. Las claves deben ser únicas, y por tanto no se permite duplicados. En cambio no hay obligación de que los valores asociados sean únicos. Cada clave sólo podrá asociarse a un solo elemento. De esa manera, cada clave se puede usar para identificar de forma única el valor asociado, ya que el mapa se asegura de que no pueda haber claves duplicadas en la colección. Los mapas implementan un forma eficiente de obtener el valor correspondiente a una determinada clave.
 
-Podemos crear un mapa (o 'map') **inmutable** usando la función `mapOf()`:
+Podemos crear un **mapa ('map') inmutable** usando la función `'mapOf()'`:
 
 ```kotlin
 val fooMap = mapOf("a" to 8, "b" to 7, "c" to 9)
@@ -1720,13 +1722,13 @@ for ((key, value) in fooMap) {
 }
 ```
 
-La función `linkedHashMap()` retorna un _'LinkedHasMap'_ de la API de colecciones de Java, que es **mutable**.
+La función `'linkedHashMap()'` retorna un _'LinkedHasMap'_ de la API de colecciones de Java, que es **mutable**.
 
-La función `sortedMapOf()` retorna un _'SortedMap'_ de la API de colecciones de Java que también es **mutable**.
+La función `'sortedMapOf()'` retorna un _'SortedMap'_ de la API de colecciones de Java que también es **mutable**.
 
 #### Sequences
 
-Las secuencias representan colecciones _'lazily-evaluated'_. Podemos crear una secuencia utilizando la función `generateSequence()`:
+Las secuencias representan colecciones _'lazily-evaluated'_. Podemos crear una secuencia utilizando la función `'generateSequence()'`. Las secuencias son excelentes  cuando el tamaño de la colección es desconocido a priori:
 
 ```kotlin
 val fooSequence = generateSequence(1, { it + 1 })
@@ -1900,7 +1902,79 @@ La igualdad referencial se comprueba con la operación `'==='` y su contraparte 
 
 ### Excepciones
 
-(TODO)
+En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene excepciones comprobadas** o _'checked exceptions'_.
+
+Para lanzar un objeto de excepción, se utiliza la palabra clave `'throw'`:
+
+```kotlin
+throw Exception("Message")
+```
+
+Para capturar una excepción lanzada se utiliza un bloque `'try'`:
+
+```kotlin
+try {
+    // some code
+}
+catch (e: SomeException) {
+    // handler
+}
+finally {
+    // optional finally block
+}
+```
+
+Puede haber 0 o más bloques `'catch'`. Los bloques `'finally'` son opcionales y puede omitirse. Sin embargo, tiene que haber al menos un bloque `'catch'` o `'finally'`.
+
+Al igual que muchas otras instrucciones en Kotlin, `'try'` es una expresión y por tanto puede devolver un valor:
+
+```kotlin
+val a: Int? = try { parseInt(input) } catch (e: NumberFormatException) { null }
+```
+
+El valor devuelto por un `'try'` que actúa como expresión es la última expresión en el bloque `'try'` o la última expresión en el bloque `'catch'`. El contenido del bloque `'finally'` no afecta al resultado de la expresión.
+
+`'throw'` es una expresión en Kotlin, así que se puede usar, por ejemplo, como parte de una _'Elvis expression'_:
+
+```kotlin
+val s = person.name ?: throw IllegalArgumentException("Name required")
+```
+
+El tipo de retorno de una expresión `'throw'` es el tipo especial `'Nothing'`. Este tipo no tiene valores y se utiliza para marcar ubicaciones del código que nunca se pueden alcanzar.
+
+```kotlin
+fun fail(message: String): Nothing {
+    throw IllegalArgumentException(message)
+}
+```
+
+Cuando llame a la función del ejemplo anterior, el compilador sabrá que la ejecución no continúa más allá de la llamada:
+
+```kotlin
+val s = person.name ?: fail("Name required")
+println(s)     // 's' is known to be initialized at this point
+```
+
+Otro caso en el que puede encontrar este tipo es la inferencia de tipos. La variante _'nullable'_ de este tipo, `'Nothing?'`, tiene exactamente un valor posible, que es el valor `'null'`. Si se usa el valor nulo para inicializar un valor de un tipo inferido y no hay otra información que se pueda usar para determinar un tipo más específico, el compilador inferirá el tipo `'Nothing?'`:
+
+```kotlin
+val x = null           // 'x' tiene el tipo `Nothing?`
+val l = listOf(null)   // 'l' tiene el tipo `List<Nothing?>
+```
+
+## Testing
+
+(Todo) Form Programming Kotlin Book
+
+## Java Interop
+
+### Calling Java from Kotlin
+
+(todo)
+
+### Calling Kotlin from Java
+
+(todo)
 
 ---
 
