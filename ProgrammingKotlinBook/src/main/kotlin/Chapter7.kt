@@ -31,15 +31,12 @@ import kotlin.reflect.full.createInstance
 fun main(args: Array<String>) {
 
     // [Nullable types]
-    // To inform the Kotlin compiler that we will allow a variable to contain a null, we must suffix
-    // the type with a ?:
     var name: String? = null
     name = "John"
     name = null
     println(name) // => null
 
-    // Similarly, we can return nullable and non-nullable types from a function, use them as
-    // function parameters, and so on:
+    // Functions
     fun getName(): String? = name // This function may or may not return a null reference
 
     fun getNotNullName(): String = name ?: "John" // This function cannot return a null reference
@@ -48,32 +45,21 @@ fun main(args: Array<String>) {
     println(getNotNullName()) // => John
 
     // [Checking for null in conditions]
-    // With smart cast, Kotlin compiler tracks conditions inside an if expression
-    // As long as we perform a check that the variable is not null, then the compiler
-    // will allow us to access the variable as if it was declared as a non-nullable type:
     var l = if (name != null) name.length else -1
 
     // [Safe calls with ?.]
-    // Second option is the safe call operator, written ?.:
-    // Safe calls are useful in chains.
     fun getCountryNameSafe(person: Person?): String? {
         return person?.address?.city?.country?.name
     }
 
     // [The !! Operator]
-    // The not-null assertion operator (!!) converts any value to a non-null
-    // type and throws an exception if the value is null.
     // val length: Int = name!!.length
 
     // [Elvis operator ?:]
-    // If the expression to the left of ?: is not null, the elvis operator returns it,
-    // otherwise it returns the expression to the right.
     val length = name?.length ?: -1
     println(length) // => -1
 
     // [Safe casting as?]
-    // If we want to safely cast to a type, or null if the cast would fail, then we can use the safe cast
-    //operator as?.
     val location: Any = "London"
     val safeString: String? = location as? String
     val safeInt: Int? = location as? Int
@@ -106,49 +92,24 @@ fun main(args: Array<String>) {
     val country = Country::class.createInstance()
     println(country.name) // => No country (default value in the constructor)
 
-    // [Annotations]
-    // Annotations allow developers to add extra meaning to classes, interfaces, parameters, and
-    // so on at compile time. Annotations can then be used by the compiler or by your own code
-    // via reflection at runtime. Depending on the annotation value, the meaning of the program
-    // or data can change.
-
-    // [Standard annotations]
-    // The Kotlin standard library includes several annotations that affect the output of the
-    // compiler
-
-    // [@JvmStatic]
-    // The @JvmStatic annotation informs the compiler that you wish the function or property
-    // annotated to have a Java static method generated in the compiled output. This annotation
-    // can only be used on objects or companion objects.
 
     // [@Throws]
-    // Since all exceptions in Kotlin are unchecked exceptions, there is no need to add a list of
-    // possible exceptions to method signatures like there is in Java. However, we may wish to
-    // inform Java users that our API throws exceptions in certain situations. We can do this using
-    // the @Throws annotation, which is used to instruct the compiler to generate throw clauses
-    // on generated methods.
     @Throws(FileNotFoundException::class)
     fun fileExists(path: String) {
+        // ...
     }
 
-    // [@JvmOverloads]
-    // Given a function with default parameters, @JvmOverloads will
-    // result in the compiler creating multiple, overloaded, methods for each default parameter.
 }
 
 // [@JvmName]
-// Due to erasure in the JVM, it is impossible to declare two functions with the same name and
-// the same erased signature.
-// The most commonly used solution to this problem is to name the methods differently. But
-// sometimes that isn't desirable. In Kotlin, we can retain the same names as long as we
-// provide alternative names for when they are compiled. To do this we annotate the functions
-// using @JvmName with a supplied alternative, as the following examples show:
 @JvmName("filterStrings")
 fun filter(list: List<String>): Unit {
+    // ...
 }
 
 @JvmName("filterInts")
 fun filter(list: List<Int>): Unit {
+    // ...
 }
 
 

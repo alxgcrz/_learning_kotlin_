@@ -30,13 +30,8 @@ import java.util.*
 
 fun main(args: Array<String>) {
     // [Defining functions]
-    // Functions are defined using the fun keyword with optional parameters and a return value.
-    // The parameter list must always be present, even if no parameters are defined
-    // Each parameter is in the form 'name: type'
     fun hello(): String = "Hello World"
 
-    // Every function must return a value, and this value could be 'Unit' if a functions does not
-    // return any meaningful value
     fun hello2(): Unit = println("Hello") // => Hello
 
     fun hello3() = println("Hello") // => Hello
@@ -45,8 +40,6 @@ fun main(args: Array<String>) {
     fun bye() = "Good bye"
 
     // [Single expression functions]
-    // Such functions can use a shortened syntax that omits the braces and uses the '='
-    // symbol before the expression rather than the 'return' keyword:
     fun hello4() = "Hello"
 
     // Or
@@ -55,15 +48,9 @@ fun main(args: Array<String>) {
     }
 
     // [Member functions]
-    // These functions are defined inside a class, object, or interface. A member function is
-    // invoked using the name of the containing class or object instance with a dot, followed by
-    // the function name and the arguments in parentheses
     val length = "Hello".take(5) // take(n: Int) is a member function of String class
 
     // [Local or nested functions]
-    // Kotlin allows us to take this a step further by supporting functions declared inside other
-    // functions. These are called local or nested functions. Functions can even be nested multiple
-    // times.
     fun reverse(str: String) = str.reversed() // This function is nested because it is inside of the main function
 
     // Functions can even be nested multiple times.
@@ -81,7 +68,6 @@ fun main(args: Array<String>) {
     }
 
     // [Named and default parameters]
-    // Named parameters allow us to be explicit about naming arguments when passed to a function
     fun bar(k: Int, m: Long = 1L, j: Boolean = true) = println("$k - $m - $j")
 
     // Once a parameter has been named, all the following parameters must be named too.
@@ -94,19 +80,13 @@ fun main(args: Array<String>) {
     bar(6, 1L, j = true)
 
     // [Extension functions]
-    // Kotlin provides the ability to extend a class with new functionality
-    // without having to inherit from the class
-    // The word 'this' is used to reference the object that the function was invoked on
     fun String.reverse() = this.reversed()
     println("Hello World".reverse()) // => dlroW olleH
 
     // [Infix functions]
-    // Infix notation is the notation where an operator or function is placed
-    // between the operands or arguments
     class InfixAccount {
         var balance = 0.0
-        // To define your own infix function, use the infix keyword before the fun keyword,
-        // remembering that infix functions have only one explicit parameter
+
         infix fun add(amount: Double) {
             this.balance = balance + amount
         }
@@ -132,9 +112,6 @@ fun main(args: Array<String>) {
     printMessage("Hello")
 
     // [Multiple return value]
-    // Let's say we need to return two things from a function. For example, a result object and a
-    // status of some sort. A compact way of doing this in Kotlin is to declare a data class and
-    // return its instance:
     data class Result(val result: Int, val status: Boolean)
 
     fun checkStatus() = Result(10, true)
@@ -142,7 +119,6 @@ fun main(args: Array<String>) {
 
 
     // An alternative to a custom class is using the Kotlin standard library 'Pair' type.
-    // This type simply wraps two values, which are accessed via the first and second fields
     fun roots(k: Int): Pair<Double, Double> {
         require(k >= 0)
         val root = Math.sqrt(k.toDouble())
@@ -153,9 +129,6 @@ fun main(args: Array<String>) {
     println("$a # $b") // => 3.0 # -3.0
 
     // [varargs]
-    // Kotlin allows functions to be defined such that they would accept a variable number of arguments
-    // Varargs allow users to pass in a comma-separated list of arguments, which the compiler
-    // will automatically wrap into an array
     fun brands(vararg brand: String) {
         for (brand in brand) {
             println("Brand: $brand")
@@ -164,14 +137,10 @@ fun main(args: Array<String>) {
 
     brands("BMW", "Audi", "Ford")
 
-    // The vararg parameter is usually the last parameter, but it does not always have to be. If
-    // there are other parameters after vararg, then arguments must be passed in using named parameters
     fun car(vararg model: String, year: Int) {}
     car("Audi", "A6", year = 2005)
 
     // [Spread operator]
-    // The spread operator * unwraps the elements of the array and passes them in as
-    // individual arguments
     val spread = arrayOf("Sony", "Nintendo", "Microsoft")
     brands(*spread)
 
@@ -182,10 +151,10 @@ fun main(args: Array<String>) {
     // [Assertions]
     // require, requireNotNull, check, error
     fun foo(k: Int, value: Boolean) {
-        require(k > 10, { "k should be greater than 10" }) // => Throws an IllegalArgumentException with the result of calling lazyMessage if the value is false.
-        requireNotNull(k) // => Throws an IllegalArgumentException if the value is null. Otherwise returns the not null value.
-        check(value) // => Throws an IllegalStateException if the value is false
-        if (k == 20) error("Error: k == 20") // => Throws an IllegalStateException with the given message.
+        require(k > 10, { "k should be greater than 10" })
+        requireNotNull(k)
+        check(value)
+        if (k == 20) error("Error: k == 20")
     }
 
     // [Generic functions]
@@ -208,11 +177,8 @@ fun main(args: Array<String>) {
 }
 
 // [Top-level functions]
-// These are functions that exist outside of any class, object, or interface and
-// are defined directly inside a file
 fun hello(): String = "Hello World!!"
 
-// Top-level functions are especially useful for defining helper or utility functions
 fun sayHello(name: String) = println("Hello $name")
 
 

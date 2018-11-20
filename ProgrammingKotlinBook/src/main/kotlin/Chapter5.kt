@@ -29,8 +29,6 @@
 fun main(args: Array<String>) {
 
     // [High order functions]
-    // A higher order function is simply a function that either accepts another function as a
-    //parameter, returns a function as its return value, or both.
     fun foo(str: String, fn: (String) -> String) {
         val applied = fn(str)
         println(applied)
@@ -45,8 +43,6 @@ fun main(args: Array<String>) {
     val evens = ints.filter { it % 2 == 0 }
 
     // [Returning a function]
-    // To return a function, we use an equals after the return type, and wrap the function in braces.
-    // Technically this is a one-line function, where the single expression after the equals is the function body
     fun bar(): (String) -> String = { it.reversed() }
 
     fun modulo(k: Int): (Int) -> Boolean = { it % k == 0 }
@@ -59,9 +55,6 @@ fun main(args: Array<String>) {
     val isEven2: (Int) -> Boolean = { k: Int -> k % 2 == 0 }
 
     // [Closure]
-    // A lambda expression or anonymous function (as well as a local function and an object expression)
-    // can access its closure, i.e. the variables declared in the outer scope.
-    // Unlike Java, the variables captured in the closure can be modified:
     var sum = 0
     ints.filter { it > 0 }.forEach {
         sum += it
@@ -69,8 +62,6 @@ fun main(args: Array<String>) {
     println(sum) // => 21
 
     // [Anonymous function]
-    // This is a function that looks similar to a
-    // normal function definition, except the name is omitted
     val m = fun(a: String, b: String): String = a + b
     println(m("Hello", "World")) // => HelloWorld
 
@@ -80,16 +71,12 @@ fun main(args: Array<String>) {
     println(ints.filter(::isEven)) // => [2, 4, 6]
 
     // [Member and extension functions references]
-    // Function references can be used for extension and member functions by prefixing them
-    // with the name of the class
     fun Int.isOdd(): Boolean = this % 2 != 0
     println(ints.filter { it.isOdd() }) // => [1, 3, 5]
     println(ints.filter(Int::isOdd)) // => [1, 3, 5]
 }
 
 // [Type alias]
-// As the name suggests, a type alias allow us to declare a new type that is simply an alias of an
-//existing type. We do this using the typealias keyword
 typealias Cache = Map<String, String>
 
 

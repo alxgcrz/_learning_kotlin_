@@ -346,7 +346,7 @@ for ((index, value) in cardNames.withIndex()) {
 
 ## Funciones
 
-Las funciones se declaran usando la palabra clave `'fun'`. Los nombres de las funciones empiezan con minúscula. Los parámetros de la función se especifican entre paréntesis después del nombre de la función. El tipo de cada parámetro debe especificarse explícitamente.
+Las funciones se declaran usando la palabra clave `'fun'`. Los nombres de las funciones empiezan con minúscula. Los parámetros de la función se especifican entre paréntesis después del nombre de la función y tienen la forma `'name: type'`. El tipo de cada parámetro debe especificarse explícitamente.
 
 ```kotlin
 fun powerOf(number: Int, exponent: Int) { ... }
@@ -414,7 +414,7 @@ fun sayHello(name: String) { // compila ya que el compilador infiere el tipo 'Un
 }
 ```
 
-Los parámetros con nombre permiten código más legible al nombrar los parámetros que se pasan a una función cuando se invoca:
+Los parámetros con nombre permiten código más legible al nombrar los parámetros que se pasan a una función cuando se invoca. Una vez que se utiliza un nombre en un parámetro, el resto de parámetros también deben asignarse con nombre:
 
 ```kotlin
 fun area(width: Int, height: Int): Int {
@@ -424,11 +424,26 @@ fun area(width: Int, height: Int): Int {
 area(10, 12)
 area(width = 10, height = 12) // código más legible
 area(height = 12, width = 10) // podemos cambiar el orden
+area(10, height = 12) // argumento por posición y argumentos con nombre
+area(width = 10, 12) // ¡incorrecto! no se permiten argumentos con nombre antes de argumentos por posición
+
+fun bar(k: Int, m: Long = 1L, j: Boolean = true) = println("$k - $m - $j")
+
+// Una vez que un parámetro ha sido nombrado, todos los siguientes parámetros deben ser nombrados
+bar(10) // => Se omiten los parámentros por defecto
+bar(15, 30L)
+bar(20, 2L, true)
+bar(m = 30L, j = false, k = 10)
+bar(k = 10, m = 20L, j = true)
+bar(5, m = 2L, j = true)
+bar(6, 1L, j = true)
 ```
 
 Cuando se invoca una función con argumentos posicionales y con nombre, todos los argumentos posicionales deben colocarse antes del primero argumento con nombre. Por ejemplo, la llamada `f(1, y = 2)` está permitida, pero `f(x = 1, 2)` no está permitida.
 
-Un parámetro de función se puede marcar con la palabra clave `'vararg'` para permitir que se pase un número variable de argumentos a la función. Se puede combinar con otros parámetros pero al igual que en Java, el parámetro `'vararg'` será el último de la lista:
+Para pasar un número variable de argumentos a una función podemos usar la palabra clave `'vararg'` delante del nombre de una variable. Por tanto la función aceptará una lista de parámetros separados por comas que el compilador envolverá en una array. Por tanto, dentro de la función accederemos a los parámetros mediante la notación de array.
+
+Este tipo de parámetros se puede combinar con otros parámetros. Normalmente el parámetro `'vararg'` será el último de la lista. Si hay otros parámetros después de `'vararg'`, deberán usarse parámetros con nombre:
 
 ```kotlin
 fun varargExample(vararg names: Int) {
@@ -437,6 +452,10 @@ fun varargExample(vararg names: Int) {
 varargExample() // => Argument has 0 elements
 varargExample(1) // => Argument has 1 elements
 varargExample(1, 2, 3) // => Argument has 3 elements
+
+
+fun car(vararg model: String, year: Int) {}
+car("Audi", "A6", year = 2005) // parámetros con nombre después de 'vararg'
 ```
 
 Para utilizar un array para suministrar un número variable de argumentos se utiliza el operador `'*'` también llamado _'spread operator'_ delante del nombre de la variable del array:
@@ -494,7 +513,7 @@ Para crear una _'extension function'_, debe prefijar el nombre de la clase que e
 
 ```kotlin
 fun String.remove(c: Char): String {  // 'String' es el tipo receptor
-    return this.filter { it != c }     // 'this' corresponde al 'objeto receptor'
+    return this.filter { it != c }     // 'this' corresponde al objeto receptor
 }
 
 println("Hello, world!".remove('l')) // => Heo, world!  // "Hello World" es el objeto receptor
@@ -521,7 +540,7 @@ C().foo(5) // => extension & overrided
 
 ### Top-level functions
 
-**Las funciones de nivel superior son funciones dentro de un paquete de Kotlin que se definen fuera de cualquier clase, objeto o interfaz**. Esto significa que son funciones a las que llama directamente, sin la necesidad de crear ningún objeto o llamar a ninguna clase. Dado que Java no soporta este tipo de funciones el compilador de Kotlin genera una clase con métodos estáticos.
+**Las funciones de nivel superior son funciones que se definen fuera de cualquier clase, objeto o interfaz**. Esto significa que son funciones a las que llama directamente, sin la necesidad de crear ningún objeto o llamar a ninguna clase. Dado que Java no soporta este tipo de funciones el compilador de Kotlin genera una clase con métodos estáticos. Estas tipo de funciones son especialmente útiles para crear funciones de utilidad o de ayuda.
 
 ```kotlin
 // Code defined inside a file called UserUtils.kt
@@ -571,7 +590,7 @@ sum(10, 20) // => 30
 Si una función _'lambda'_ tiene solo un parámetro, su declaración puede omitirse (junto con ->). El nombre del único parámetro será `'it'`.
 
 ```kotlin
-val isNegative: (Int) -> Boolean = { it < 0 }
+val isNegative: (Int) -> Boolean = { it < 0 } // este literal es del tipo '(it: Int) -> Boolean'
 isNegative(-5) // => true
 ```
 
@@ -584,9 +603,31 @@ val unusedSecondParam: (String, Int) -> Boolean = { s, _ ->
 unusedSecondParam("Hello World", 0) // 0 is unused
 ```
 
+### Anonymous functions
+
+Una función anónima se parece mucho a una declaración de función normal, excepto que se omite su nombre. Su cuerpo puede ser una expresión o un bloque:
+
+```kotlin
+// Función anónima cuyo cuerpo es una expresión
+fun(x: Int, y: Int): Int = x + y
+
+// Función anónima con bloque
+fun(x: Int, y: Int): Int {
+    return x + y
+}
+```
+
+El tipo de los parámetros de una función anónima pueden omitirse si se pueden inferir por el contexto:
+
+```kotlin
+ints.filter(fun(item) = item > 0)
+```
+
+La inferencia de tipo de retorno para funciones anónimas funciona igual que para las funciones normales: el tipo de retorno se deduce automáticamente para funciones anónimas con un cuerpo de expresión y debe especificarse explícitamente (o se supone que es `'Unit'`) para funciones anónimas con un cuerpo de bloque.
+
 ### High-Order Functions
 
-Una _'high-order function'_ o **función de orden superior** es una función que puede tomar funciones como parámetros, devolver una función como tipo de retorno o ambas cosas.
+Una _'high-order function'_ o **función de orden superior** es una función que puede tomar funciones como parámetros y/o devolver una función como tipo de retorno.
 
 ```kotlin
 // Función con dos parámetros, uno de ellos es una función
@@ -648,7 +689,7 @@ println("$upperCaseLetters - $lowerCaseLetters") // => HW - elloorld
 
 ### Closures
 
-Un *__'closure'__* es una función que tiene acceso a variables y parámetros que se definen en un ámbito externo.
+Un *__'closure'__* es una función que tiene acceso a variables y parámetros que se definen en un ámbito externo. A diferencia de Java, las variables 'capturadas' pueden ser modificadas.
 
 ```kotlin
 fun printFilteredNamesByLength(length: Int) {
@@ -662,7 +703,7 @@ fun printFilteredNamesByLength(length: Int) {
 
 ### Local or Nested Functions
 
-Para llevar más lejos la modularización de programas, Kotlin nos proporciona funciones locales, también conocidas como funciones anidadas. **Una función local es una función que se declara dentro de otra función**.
+Para llevar más lejos la modularización de programas, Kotlin nos proporciona funciones locales, también conocidas como funciones anidadas o _'nested functions'_. **Una función local es una función que se declara dentro de otra función**.
 
 Podemos hacer que nuestras funciones locales sean más concisas al no pasarles parámetros explícitamente. Esto es posible porque las funciones locales tienen acceso a todos los parámetros y variables de la función de cierre.
 
@@ -706,7 +747,7 @@ class Student {
 
 val student = Student()
 student addKotlinScore 95.00 // Invocando la función usando la notación 'infix'
-student.addKotlinScore(95) // Invocación normal
+student.addKotlinScore(95) // Invocando la función con notación normal
 ```
 
 ### Inline functions
@@ -721,13 +762,13 @@ Con este mecanismo, nuestro código se ha optimizado significativamente, no más
 
 ### Clases
 
-Para definir una clase se usa la palabra clave `'class'`.
+Las clases son los bloques de construcción principales de cualquier lenguaje de programación orientado a objetos. Para definir una clase se usa la palabra clave `'class'`.
 
 ```kotlin
 class Invoice { ... }
 ```
 
-La declaración de clase consiste en el nombre de la clase, el encabezado de la clase (especificando sus parámetros de tipo, el constructor primario, etc.) y el cuerpo de clase, rodeado de llaves. Tanto el encabezado como el cuerpo son opcionales. Si la clase no tiene cuerpo se pueden omitir las llaves.
+La declaración de clase consiste en el nombre de la clase, el encabezado de la clase (especificando sus parámetros de tipo, el constructor primario, etc.) y el cuerpo de clase, rodeado de llaves. Tanto el encabezado como el cuerpo son opcionales. Si la clase no tiene cuerpo se pueden omitir las llaves. Si no se especifica visibilidad, la visibilidad por defecto es **public** y por tanto cualquiera puede crear instancias de dicha clase.
 
 ```kotlin
 class Empty
@@ -940,6 +981,8 @@ var stringRepresentation: String
 
 Nótese que por convención, el nombre del parámetro de la función `'setter()'` es `'value'` pero no es obligatorio y puede escogerse otro nombre.
 
+Las propiedades pueden ser **'private'**, **'protected'**, o **'public'** (visibilidad por defecto).
+
 #### Backing Fields
 
 El campo de respaldo o *__'backing field'__* es un campo generado automáticamente para cualquier propiedad que solo puede usarse dentro de los accesores (getter o setter).
@@ -992,7 +1035,7 @@ const val SUBSYSTEM_DEPRECATED: String = "This subsystem is deprecated"
 
 #### Late-Initialized Properties and Variables
 
-Normalmente, las propiedades declaradas con un tipo no nulo deben inicializarse en el constructor. Sin embargo, bastante a menudo esto no es conveniente. Por ejemplo, las propiedades se pueden inicializar mediante la inyección de dependencia, o en el método de configuración de una prueba de unidad. En este caso, no puede proporcionar un inicializador que no sea nulo en el constructor, pero aún así desea evitar las comprobaciones nulas al hacer referencia a la propiedad dentro del cuerpo de una clase.
+Normalmente, las propiedades declaradas con un tipo no nulo deben inicializarse en el constructor. Sin embargo, bastante a menudo esto no es conveniente. Por ejemplo, las propiedades se pueden inicializar mediante la inyección de dependencias, o en el método de configuración de una prueba de unidad. En este caso, no puede proporcionar un inicializador que no sea nulo en el constructor, pero aún así desea evitar las comprobaciones nulas al hacer referencia a la propiedad dentro del cuerpo de una clase.
 
 Para manejar este caso, puede marcar la propiedad con el modificador `'lateinit'`:
 
@@ -1010,11 +1053,17 @@ public class MyTest {
 }
 ```
 
-El modificador se puede usar en las propiedades `'var'` declaradas dentro del cuerpo de una clase (no en el constructor principal, y solo cuando la propiedad no tiene un `'getter()'` o `'setter()'`  personalizado)
+Para usar este modificador hay que cumplir ciertos requisitos:
+
+* Se puede usar únicamente en las propiedades `'var'` declaradas dentro del cuerpo de una clase. Por tanto no se puede usar en propiedades declaradas en el constructor principal.
+
+* La propiedad no tiene un `'getter()'` o `'setter()'` personalizado.
+
+Acceder a una propiedad antes de que haya sido inicializada lanzará una _'UninitializedPropertyAccessException'_.
 
 #### Member Functions
 
-Una función miembro es una función que se define dentro de una clase u objeto. Las funciones miembro se invocan con el operador `'.'`:
+Una función miembro es una función que se define dentro de una clase, objeto o interfaz. Las funciones miembro se invocan con el operador `'.'`:
 
 ```kotlin
 class Sample() {
@@ -1040,7 +1089,7 @@ Todas las clases en Kotlin tienen una superclase común `'Any'`, que es la super
 class Example // Hereda de 'Any' implicitamente
 ```
 
-Para declarar una clase base, colocamos el tipo después de dos puntos en el encabezado de la clase derivada. Por defecto en Kotlin las clases están cerradas a la herecia, es decir, son `'final'`. Para permitir que una clase sea heredada, hay que utilizar la palabra clave `'open'`.
+Para declarar que una clase hereda de una clase base, colocamos el tipo de la clase base después de dos puntos en el encabezado de la clase derivada. Por defecto en Kotlin las clases están cerradas a la herencia, es decir, son `'final'`. Para permitir que una clase sea heredada, hay que utilizar la palabra clave `'open'`.
 
 ```kotlin
 open class Base(p: Int)
@@ -1331,13 +1380,18 @@ class Car private constructor(val name: String, val plateNo: String) {
 
 Las **Data classes** son una forma concisa de crear clases que solo contienen datos. Estas clases se definen con la palabra clave `'data'`.
 
+```kotlin
+data class User(val name: String, val age: Int)
+```
+
 De forma automática el compilador crear los métodos `hashCode()`, `equals()`, `copy()` y `toString()` a partir de todas las propiedades declaradas en el constructor primario. También se generan las funciones `componentN()` que corresponden a las propiedades declaradas en orden en el constructor primario.
 
-Para evitar comportamientos extraños estas clases deben cumplir ciertos requisitos:
+Para evitar comportamientos extraños estas clases deben **cumplir ciertos requisitos**:
 
 * El constructor primario necesita tener al menos un parámetro
 * Todos los parámetros del constructor primario estarán marcados como `'val'` o `'var'`
-* Las _'data class'_ no puede ser `'abstract'`, `'open'`, `'sealed'` o `'inner'`
+* Una _'data class'_ no puede ser `'abstract'`, `'open'`, `'sealed'` o `'inner'`
+* (Antes de 1.1) Las _'data classes'_ no pueden extender de otras clases (pero pueden implementar interfaces)
 
 El compilador sólo tiene en cuenta las propiedades declaradas en el constructor primario a la hora de generar los métodos de forma automática. Por tanto, para excluir propiedades se deben declarar en el cuerpo de la clase.
 
@@ -1355,7 +1409,7 @@ println(fooData) // => DataClassExample(x=1, y=2, z=4)
 println(fooCopy) // => DataClassExample(x=1, y=100, z=4)
 ```
 
-En el caso de necesitar copiar un objeto alterando algunas de sus propiedades pero manteniendo el resto sin cambios podemos utilizar la función `copy()` generada por el compilador.
+El compilador genera la función `copy()` que permite copiar un objeto y en caso necesario, crear la copia alterando algunas de sus propiedades y manteniendo el resto.
 
 ```kotlin
 data class User(val name: String, val age: Int)
@@ -1375,6 +1429,24 @@ Las funciones `componentN()` permite desestructurar las propiedades:
 val jane = User("Jane", 35)
 val (name, age) = jane
 println("$name, $age years of age") // => Jane, 35 years of age
+```
+
+Cada tipo se deriva de `'Any'`, que viene con una declaración de método `'hashCode()'`. Esto es el equivalente de un método `'hashCode()'` de clase _'Object'_ de Java. Este método es importante cuando se insertan instancias del objeto en colecciones, como un mapa. Al implementar este método, se debe cumplir con una serie de requisitos:
+
+1. Cuando se invoque en el mismo objeto más de una vez durante el tiempo de ejecución, el método `'hashCode()'` debe devolver constantemente el mismo valor, dado que el objeto no se modificó.
+
+2. Si para dos objetos el método `'equals()'`  devuelve true, entonces llamar al método `'hashCode()'` en cada uno de ellos debería devolver el mismo valor entero.
+
+3. Si dos objetos no son iguales, es decir, que el método `'equals()'` devuelve false cuando se comparan, no es un requisito que cada método `'hashCode()'` del objeto devuelva valores distintos. Sin embargo, producir un entero distinto para objetos desiguales podría mejorar el rendimiento de las colecciones basadas en 'hash'.
+
+Las _'data classes'_ son un forma compacta y legible de devolver dos o más valores de una función. Otra alternativa, menos legible, es utilizar el tipo `'Pair'` o `'Triple'` proporcionado por Kotlin:
+
+```kotlin
+data class Result(val result: Int, val status: Boolean)
+
+fun checkStatus() = Result(10, true)  // función que retorna un tipo 'Result'
+
+val (result, status) = checkStatus() // usamos la desestructuración de datos para acceder a los datos
 ```
 
 ### Sealed classes
@@ -1568,7 +1640,7 @@ object APIConstants {
 
 ##### Companion objects
 
-Los _'companion objects'_ son un tipo de _'object declaration'_. Como Kotlin no admite clases, métodos o propiedades estáticas como las que tenemos en Java, Kotlin provee los _'companion objects'_. Estos objetos son básicamente un objeto que pertenece a una clase que se conoce como la clase complementaria del objeto. Este `'object'` se indica con la palabra clave `'companion'`.
+Los _'companion objects'_ son un tipo de _'object declaration'_. Como Kotlin no admite clases, métodos o propiedades estáticas como las que tenemos en Java, Kotlin provee los _'companion objects'_. Estos objetos son básicamente un objeto que pertenece a una clase que se conoce como la clase complementaria del objeto. Este objeto se indica con la palabra clave `'companion'`.
 
 Similar a los métodos estáticos en Java, un _'companion object'_ no está asociado con una instancia de clase, sino con la propia clase.
 
@@ -1593,16 +1665,21 @@ class Person private constructor(var firstName: String, var lastName: String) {
 val person = Person.create("John", "Doe")
 
 class MyClass {
+
+    fun sayHello() = println("hello")
+
     // Objeto con el nombre 'Factory' y que utilizaremos como 'Factory Pattern'
     companion object Factory {
         fun create(): MyClass = MyClass()
+
+        fun sayHelloFromCompanion() = MyClass().sayHello() // Podemos acceder a miembros de la clase
     }
 }
 
 val myClass = MyClass.create()
+MyClass().sayHello() // incorrecto
+MyClass.Factory.sayHelloFromCompanion() // Invocar un método del 'companion'
 ```
-
-Hay que tener en cuenta también que la clase complementaria tiene acceso sin restricciones a todas las propiedades y funciones declaradas en su objeto complementario, mientras que un objeto complementario no puede acceder a los miembros de la clase.
 
 ## Other
 
@@ -1627,20 +1704,6 @@ val mapData = mapOf("a" to 1, "b" to 2)
 for ((key, value) in mapData) {
     println("$key -> $value")
 }
-```
-
-La función `'with'` es similar a la función `'with'` en Javascript:
-
-```kotlin
-data class MutableDataClassExample(var x: Int, var y: Int, var z: Int)
-
-val fooMutableData = MutableDataClassExample(7, 4, 9)
-with(fooMutableData) {
-    x -= 2
-    y += 2
-    z--
-}
-println(fooMutableData) // => MutableDataClassExample(x=5, y=6, z=8)
 ```
 
 ### Colecciones
@@ -1865,23 +1928,63 @@ val circle = shape as Circle
 val circle: Circle? = shape as? Circle // Conversión segura
 ```
 
-### Valores nulos
+### Valores nulos ('nullable types')
 
 Para que una variable contenga el valor '**null**' debe especificarse explícitamente como _'nullable'_. Una variable se puede especificar como _'nullable'_ agregando un `?` a su tipo.
 
-Podemos acceder a una variable nula utilizando el operador '`?.`' también llamado _'Safe Call'_. Podemos usar el operador '`?:`', también llamado _'Elvis Operator'_ para especificar un valor alternativo para usar si una variable es nula.
+Podemos acceder a una variable nula utilizando el operador `'?.'` también llamado _'Safe Call Operator'_.
+
+Kotlin provee el operador `'?:'`, también llamado _'Elvis Operator'_ para especificar un valor alternativo para usar si una variable es nula. Cuando la expresión de la izquierda del operador `'?:'` no es nulo entonces lo devuelve. En caso de que sea nulo devuelve la expresión de la derecha. La expresión de la derecha sólo será evaluada si la expresión de la izquierda es 'null'.
 
 ```kotlin
 val name: String = null // no compilará ya que no puede contener valores nulos
 var fooNullable: String? = "abc"
 
-println(fooNullable?.length) // => 3
-println(fooNullable?.length ?: -1) // => 3
+fooNullable?.length // => 3
+
+// 'Elvis Operator'
+fooNullable?.length ?: -1 // => 3
 
 fooNullable = null
-val len: Int? = fooNullable?.length // El tipo de retorno puede ser 'null' y por tanto debemos usar Int?
-println(fooNullable?.length) // => null
-println(fooNullable?.length ?: -1) // => -1
+val len: Int? = fooNullable?.length // El tipo de retorno de 'fooNullable' puede ser 'null' y por tanto debemos usar Int?
+
+fooNullable?.length // => null
+fooNullable?.length ?: -1 // => -1
+
+// Encadenar 'safe calls'. La cadena retorna 'null' si alguna de ellas es 'null'
+fun getCountryNameSafe(person: Person?): String? {
+    return person?.address?.city?.country?.name
+}
+
+// Dado que 'throw' y 'return' son expresiones en Kotlin se pueden usar en la parte derecha del operador 'Elvis'
+fun foo(node: Node): String? {
+    val parent = node.getParent() ?: return null
+    val name = node.getName() ?: throw IllegalArgumentException("name expected")
+    // ...
+}
+```
+
+De manera similar, podemos devolver tipos _'nullable'_ y no _'nullable'_  desde una función.
+
+```kotlin
+fun getName(): String? = name // Esta función puede o no devolver una referencia nula.
+
+fun getNotNullName(): String = name ?: "John" // Esta función no devolverá una referencia nula
+
+getName() // => null
+getNotNullName() // => John
+```
+
+Con _'smart cast'_, el compilador rastrea las condiciones dentro de una expresión `'if'`. Si realizamos la verificación de que una variable no es nula, entonces el compilador nos permitirá acceder a la variable como si hubiera sido declarada como un tipo no anulable:
+
+```kotlin
+var l = if (name != null) name.length else -1
+```
+
+El operador de aserción no-nulo `'!!'` convierte cualquier valor a un tipo no nulo y lanza una excepción _'NullPointerException'_ si el valor es nulo.
+
+```kotlin
+val length: Int = name!!.length
 ```
 
 ### Igualdad
@@ -1900,9 +2003,136 @@ if (a == b) {
 
 La igualdad referencial se comprueba con la operación `'==='` y su contraparte `'!=='` y evalúa a `true` si y sólo si dos referencias apuntan al mismo objeto.
 
+### [Standard Library Functions]
+
+Son funciones que proporciona Kotlin para aumentar la biblioteca estándar de Java.
+
+#### [Apply]
+
+`'apply'` es una función de extensión de la biblioteca estándar de Kotlin declarada en `'Any'`, por lo que puede ser invocada en cualquier tipo de instancia. `'apply'` acepta una expresión lambda que es invocada y el receptor es la instancia donde es llamada. La función `'apply'` devuelve una instacia del original.
+
+Su uso principal es hacer que el código que necesita inicializar una instancia sea más legible permitiendo que las funciones y las propiedades se llamen directamente dentro de la función antes de devolver el valor en sí.
+
+```kotlin
+data class Person(var firstName: String, var lastName : String)
+var person = Person("John", "Doe")
+
+person.apply { this.firstName = "Bruce" }
+print(person) // => Person(firstName=Bruce, lastName=Doe)
+
+// 'apply' retorna la instancia original.
+person.apply { this.firstName = "Bruce" }.firstName = "Steve"
+print(person) // => Person(firstName=Steve, lastName=Doe)
+```
+
+#### [Let]
+
+La función `'let'` toma el objeto sobre el que se invoca como parámetro y devuelve el resultado de la expresión lambda. Es útil cuando desea ejecutar algún código en un objeto antes de devolver algún valor diferente y no necesita mantener una referencia al original:
+
+```kotlin
+fun main(args: Array<String>) {
+    var str = "Hello World"
+    str.let { println("$it!!") } // => Hello World!!
+    println(str) // => Hello World
+}
+
+var strLength = str.let { "$it function".length } // devuelve el resultado de la expresión lambda
+println("strLength is $strLength") // => strLength is 25
+```
+
+### [With]
+
+La función `'with'` es una función de nivel superior diseñada para los casos en los que desea llamar a múltiples funciones en un objeto y no desea repetir el receptor cada vez. La función `'with'` acepta un receptor y un cierre para operar en dicho receptor:
+
+```kotlin
+data class Person(var firstName: String, var lastName : String)
+var person = Person("John", "Doe")
+
+with(person)
+{
+    firstName = "Bruce"
+    lastName = "Doe"
+}
+
+// notación sin 'with'
+person.firstName = "John"
+person.lastName = "Doe"
+```
+
+La última expresión en un bloque `'with'` se retorna como resultado:
+
+```kotlin
+var name = with(person)
+{
+    firstName = "John"
+    lastName = "Doe"
+    "$firstName $lastName" // se retorna este valor y se almacena en 'name'
+}
+println(name) // => John Doe
+```
+
+#### [Run]
+
+`'Run'` es una función que combina las características de `'with'` y `'let'`. Esto significa que se pasa una expresión lambda a la función `'run'` y la instancia del objeto es el receptor. El valor de retorno de la expresión lambda se usa como valor de retorno:
+
+```kotlin
+person.run {
+    this.firstName = "Bruce"
+}
+print(person) // => Person(firstName=Bruce, lastName=Doe)
+
+```
+
+La diferencia clave entre `'let'` y `'run'` es que con `'run'` el receptor es la instancia,  mientras que en `'let'`, el argumento de la expresión lambda es la instancia.
+
+#### [Repeat]
+
+Esta función acepta un entero y una función literal. La función literal será invocada las veces indicadas por el valor entero.
+
+```kotlin
+repeat(10, { println("Hello") })
+```
+
+#### [Lazy]
+
+La función `'lazy'` es una función cuya utilidad es envolver funciones costosas en términos de rendimiento o de recursos y que serán invocadas cuando sean requeridas por primera vez. La ventaja de utilizar esta función proporcionada por la biblioteca estándar de Kotlin es que el compilador mantendrá la invocación sincronizada evitando que sea invocada más de una vez.
+
+```kotlin
+fun readStringFromDatabase(): String = ... // expensive operation
+val lazyString = lazy { readStringFromDatabase() }
+```
+
+#### [Use]
+
+La función `'use'` es similar a la declaración `'try-with-resources'` presente en Java 7. La función `'use'` se define como una función de extensión de la interfaz _'Closeable'_. Ejecuta la función y luego 'cierra' el recurso de forma segura.
+
+### Assertions
+
+Kotlin proporciona un conjunto de funciones que nos permiten agregar una cantidad limitada de **especificaciones formales** a nuestro código. Una especificación formal es una aserción que siempre debe ser verdadera o falsa en la ubicación cuando se ejecuta la aserción. Estos también se conocen como contratos o diseño por contrato:
+
+* _`require()'` y `'requireNotNull()'` lanza una excepción de tipo _'IllegalArgumentException'_ y se utiliza para garantizar que los argumentos cumplan el contrato.
+* `'assert()'` lanza una excepción _'AssertionException'_ y se utiliza para garantizar que nuestro estado interno es consistente.
+* `'check()'` y `'error()'` lanza una excepción _'IllegalStateException'_ y también se usa para mantener la consistencia del estado interno.
+
+Estas funciones son similares. La clave que las diferencia es el tipo de excepción que se plantea.
+
+```kotlin
+fun neverEmpty(str: String) {
+    require(str.length > 0, { "String should not be empty" })
+    println(str)
+}
+
+fun foo(k: Int, value: Boolean) {
+    require(k > 10, { "k should be greater than 10" }) // => throws an IllegalArgumentException
+    requireNotNull(k) // => throws an IllegalArgumentException if the value is null.
+    check(value) // => throws an IllegalStateException if the value is false
+    if (k == 20) error("Error: k == 20") // => throws an IllegalStateException
+}
+```
+
 ### Excepciones
 
-En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene excepciones comprobadas** o _'checked exceptions'_.
+En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene excepciones marcadas** o _'checked exceptions'_.
 
 Para lanzar un objeto de excepción, se utiliza la palabra clave `'throw'`:
 
@@ -1961,6 +2191,90 @@ Otro caso en el que puede encontrar este tipo es la inferencia de tipos. La vari
 val x = null           // 'x' tiene el tipo `Nothing?`
 val l = listOf(null)   // 'l' tiene el tipo `List<Nothing?>
 ```
+
+## Anotaciones
+
+Las **anotaciones** permiten a los desarrolladores agregar un significado adicional a las clases, interfaces, parámetros, etc., en el momento de la compilación. Las anotaciones pueden ser utilizadas por el compilador o por su propio código a través de la reflexión en tiempo de ejecución. Dependiendo del valor de la anotación, el significado del programa o los datos puede cambiar.
+
+### [@JvmStatic]
+
+Kotlin representa funciones de nivel de paquete (funciones fuera de una clase) como métodos estáticos. Kotlin también puede generar métodos estáticos para funciones definidas en *__'objects'__* y *__'companin objects'__* si anota esas funciones como `'@JvmStatic'`. Si usa esta anotación, el compilador generará tanto un método estático en la clase envolvente del objeto como un método de instancia en el propio objeto.
+
+```kotlin
+class C {
+    companion object {
+        @JvmStatic fun foo() {}
+        fun bar() {}
+    }
+}
+
+// Ahora 'foo()' es estático en Java pero no 'bar()'
+C.foo(); // correcto
+C.bar(); // error: 'bar()' no es un método estático
+C.Companion.foo(); // correcto
+C.Companion.bar(); // la única forma de invocar a 'bar()'
+
+object Obj {
+    @JvmStatic fun foo() {}
+    fun bar() {}
+}
+
+// In Java:
+Obj.foo(); // correcto
+Obj.bar(); // error
+Obj.INSTANCE.bar(); // correcto, una llamada a través de la instancia 'Singleton'
+Obj.INSTANCE.foo(); // correcto
+```
+
+### [@Throws]
+
+Dado que todas las excepciones en Kotlin son excepciones sin marcar, no es necesario agregar una lista de posibles excepciones a las firmas de métodos como las que hay en Java. Sin embargo, es posible que deseamos informar a los usuarios de Java que nuestra API produce excepciones en ciertas situaciones. Podemos hacer esto utilizando la anotación `'@Throws'`, que se utiliza para indicar al compilador que genere cláusulas de lanzamiento en los métodos generados.
+
+```kotlin
+@Throws(FileNotFoundException::class)
+fun fileExists(path: String) {
+    // ...
+}
+```
+
+### [@JvmOverloads]
+
+Dada una función con parámetros por defecto, `'@JvmOverloads'` hará que el compilador cree múltiples métodos sobrecargados para cada parámetro predeterminado.
+
+### [@JvmName]
+
+Podemos cambiar el nombre del fichero creado por Kotlin con la anotación `'@JvmName'`:
+
+```kotlin
+// example.kt
+package demo
+
+class Foo
+
+fun bar() { ... }
+
+// En Java
+new demo.Foo();
+demo.ExampleKt.bar();
+
+
+// Usamos la anotación '@JvmName' al principio del fichero para indicar al compilador el nombre del fichero
+@file:JvmName("DemoUtils")
+
+package demo
+
+class Foo
+
+fun bar() { ... }
+
+// Ahora en Java
+new demo.Foo();
+demo.DemoUtils.bar();
+```
+
+## Reflection
+
+(todo)
 
 ## Testing
 
