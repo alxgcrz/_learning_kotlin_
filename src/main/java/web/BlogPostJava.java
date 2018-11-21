@@ -16,7 +16,7 @@
  * ***********************************************************************
  */
 
-package com.example.java;
+package web;
 
 import java.net.URI;
 import java.util.Date;

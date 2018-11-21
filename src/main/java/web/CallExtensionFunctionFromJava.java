@@ -16,15 +16,15 @@
  * ***********************************************************************
  */
 
-package com.example.java;
+package web;
 
-import com.example.kotlin.Singleton;
+import com.example.kotlin.StringUtilsKt;
 
-public class CallSingletonInstance {
+public class CallExtensionFunctionFromJava {
 
+    // Call an extension function from Java
     public static void main(String args[]) {
-        Singleton.INSTANCE.printSomething();
-        Singleton.printSomethingJava();
+        String name = "john";
+        System.out.println("My name is " + StringUtilsKt.upperCaseFirstLetter(name));
     }
-
 }

@@ -16,22 +16,15 @@
  * ***********************************************************************
  */
 
-package com.example.kotlin
+package web;
 
-class Circle {
+import com.example.kotlin.Singleton;
 
-    var area = 0.0
+public class CallSingletonInstance {
 
-    // Member function
-    fun calculateArea(radius: Double): Double {
-        require(radius > 0, { "Radius must be greater than 0" })
-        return Math.PI * Math.pow(radius, 2.0)
-    }
-
-    // Infix function
-    infix fun area(radius: Double): Double {
-        area = Math.PI * Math.pow(radius, 2.0)
-        return area
+    public static void main(String args[]) {
+        Singleton.INSTANCE.printSomething();
+        Singleton.printSomethingJava();
     }
 
 }

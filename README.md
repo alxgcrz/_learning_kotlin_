@@ -1,4 +1,6 @@
-# Apuntes de [Kotlin]
+# Apuntes de [Kotlin] - WIP
+
+PDF version -> [Kotlin.pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-kotlin/master/Kotlin.pdf)
 
 ## Compilación
 
@@ -12,14 +14,14 @@ Usar la línea de comandos para ejecutar scripts (.kts): `$ kotlinc -script name
 
 Compilar una librería sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
 
-Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the book.book.book.main class name inside the file named name.kt)`
+Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
 ## Basics
 
-El punto de entrada en un programa escrito en Kotlin (y en Java) es la función *__'book.book.book.main'__*. Esta función recibe un array que contiene los argumentos de la línea de comandos. Las funciones y variables en Kotlin pueden declararse en un "nivel superior", es decir, directamente dentro de un paquete.
+El punto de entrada en un programa escrito en Kotlin (y en Java) es la función *__'main'__*. Esta función recibe un array que contiene los argumentos de la línea de comandos. Las funciones y variables en Kotlin pueden declararse en un "nivel superior", es decir, directamente dentro de un paquete.
 
 ```kotlin
-fun book.book.book.main(args: Array<String>) {
+fun main(args: Array<String>) {
     println("Hello World!")
 }
 ```
@@ -55,14 +57,14 @@ val USER_NAME_FIELD = "UserName"
 
 En Kotlin, **todo es un objeto** en el sentido de que podemos llamar funciones y propiedades de miembro en cualquier variable. Algunos de los tipos como los números, los caracteres o los booleanos pueden tener una representación interna especial que se representa como valores primitivos en tiempo de ejecución, pero para el usuario se comportan como clases ordinarias.
 
-La declaración de valores se realiza utilizando `var` o `val`. Las variables declaradas como `val` son inmutables o 'read-only', es decir, no se pueden reasignar, mientras que las `var` son mutables y por tanto se pueden reasignar.
+La declaración de valores se realiza utilizando `var` o `val`. Las variables declaradas como `val` son inmutables o 'read-only', es decir, no se pueden reasignar, mientras que las `var` son mutables y por tanto se le pueden asignar un nuevo valor pero únicamente del mismo tipo declarado. La recomendación es crear variables inmutables, que son más seguras en entornos _'multithreading'_ ya que no se pueden modificar y utilizar las variables mutables cuando sea necesario.
 
 ```kotlin
 val fooVal = 10 // val es inmutable y no se podrá ser reutilizada
 val otherVal
 otherVal = "My Value" // Podemos declar la variable 'val' en una línea y asignarle valor posteriormente. Sigue siendo una sola asignación.
 var fooVar = 10
-fooVar = 20 // 'fooVar' se puede volver a asignar
+fooVar = 20 // 'fooVar' se puede le puede asignar un nuevo valor pero únicamente del mismo tipo.
 ```
 
 En la mayoría de los casos, Kotlin puede determinar o inferir cuál es el tipo de una variable, por lo que no tenemos que especificarla explícitamente. Cuando la variable no se inicialice deberemos indicar explícitamente el tipo de la variable.
@@ -89,7 +91,7 @@ val binary: Int = 0b101
 val char: Char = 'a'
 ```
 
-A diferencia de Java, en Kotlin todos los tipos son objetos y por tanto no hay _'wrappers'_ u objetos envoltorio tipo `Integer`, `Double`, etc...
+A diferencia de Java, en Kotlin **todos los tipos son objetos** y por tanto no hay _'wrappers'_ u objetos envoltorio tipo `Integer`, `Double`, etc...
 
 Los caracteres no son números en Kotlin, a diferencia de Java. Los literales de cadena se escriben con comillas simples `'1'`. Los caracteres especiales se escapan con la barra invertida `'\'`
 
@@ -151,6 +153,7 @@ Las cadenas pueden contener expresiones de plantilla o _'template expressions'_.
 ```kotlin
 val name = "John Doe"
 println("$name has ${name.length} characters") // => John Doe has 8 characters
+
 val age = 40
 println("You are ${if (age > 60) "old" else "young"}") // => You are young
 ```
@@ -310,6 +313,7 @@ Podemos forzar la creación de arrays del mismo tipo. De esta forma el compilado
 
 ```kotlin
 val myArray = arrayOf<Int>(1, 2, 3, 4)
+println(myArray.contentToString()) // => [1, 2, 3, 4]
 ```
 
 La librería estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `'intArrayOf()'`, `'longArrayOf()'`, `'charArrayOf()'`, `'doubleArrayOf()'`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
@@ -319,9 +323,9 @@ val cards = intArrayOf(10, 11, 12) // IntArray
 println("${cards[1]}") // => 11
 ```
 
-Para mejorar la eficiencia y rendimiento del código, cuando se utilicen tipos primitivos hay que utilizar las funciones `'intArrayOf()'`, `'longArrayOf()'`, etc.. en vez de `arrayOf()` para así evitar el coste asociado a las operaciones de 'boxing'/'unboxing'.
+Para mejorar la eficiencia y rendimiento del código, cuando se utilicen tipos primitivos hay que utilizar las funciones `'intArrayOf()'`, `'longArrayOf()'`, etc.. en vez de `'arrayOf()'` para así evitar el coste asociado a las operaciones de 'boxing'/'unboxing'.
 
-Alternativamente, podemos crear una matriz a partir de un tamaño inicial y una función, que se utiliza para generar cada elemento usando el constructor `Array()`:
+Alternativamente, podemos crear una matriz a partir de un tamaño inicial y una función, que se utiliza para generar cada elemento usando el constructor `'Array()'`:
 
 ```kotlin
 val allCards = Array(12, { i -> i + 1 })
@@ -336,7 +340,7 @@ for (index in cardNames.indices) {
 }
 ```
 
-Otra forma posible de iterar es usando `withIndex()`:
+Otra forma posible de iterar es usando `'withIndex()'`:
 
 ```kotlin
 for ((index, value) in cardNames.withIndex()) {
@@ -513,7 +517,7 @@ Para crear una _'extension function'_, debe prefijar el nombre de la clase que e
 
 ```kotlin
 fun String.remove(c: Char): String {  // 'String' es el tipo receptor
-    return this.book.filterStrings { it != c }     // 'this' corresponde al objeto receptor
+    return this.filter { it != c }     // 'this' corresponde al objeto receptor
 }
 
 println("Hello, world!".remove('l')) // => Heo, world!  // "Hello World" es el objeto receptor
@@ -620,7 +624,7 @@ fun(x: Int, y: Int): Int {
 El tipo de los parámetros de una función anónima pueden omitirse si se pueden inferir por el contexto:
 
 ```kotlin
-ints.book.filterStrings(fun(item) = item > 0)
+ints.filter(fun(item) = item > 0)
 ```
 
 La inferencia de tipo de retorno para funciones anónimas funciona igual que para las funciones normales: el tipo de retorno se deduce automáticamente para funciones anónimas con un cuerpo de expresión y debe especificarse explícitamente (o se supone que es `'Unit'`) para funciones anónimas con un cuerpo de bloque.
@@ -645,13 +649,13 @@ fun isPositive(n: Int): (Int) -> Boolean {
 // Esta función de orden superior devuelve una función de forma más compacta
 fun modulo(k: Int): (Int) -> Boolean = { it % k == 0 }
 
-val evens = listOf(1, 2, 3, 4, 5, 6).book.filterStrings(modulo(2)) // => [2, 4, 6]
+val evens = listOf(1, 2, 3, 4, 5, 6).filter(modulo(2)) // => [2, 4, 6]
 
 // Asignar la función a una variable
 val isEven: (Int) -> Boolean = modulo(2)
 
-listOf(1, 2, 3, 4).book.filterStrings(isEven) // => [2, 4]
-listOf(5, 6, 7, 8).book.filterStrings(isEven) // => [6, 8]
+listOf(1, 2, 3, 4).filter(isEven) // => [2, 4]
+listOf(5, 6, 7, 8).filter(isEven) // => [6, 8]
 ```
 
 El siguiente ejemplo de función de orden superior acepta una función lambda `{ (String) -> Boolean }` como parámetro. Se expresa como "acepta una función 'from String to Boolean'":
@@ -679,10 +683,10 @@ En Kotlin, hay una convención de que si el último parámetro de una función a
 
 ```kotlin
 // lambda expression inside parentheses
-val upperCaseLetters = "Hello World".book.filterStrings({ it.isUpperCase() })
+val upperCaseLetters = "Hello World".filter({ it.isUpperCase() })
 
 // lambda outside parentheses
-val lowerCaseLetters = "Hello World".book.filterStrings { it.isLowerCase() }
+val lowerCaseLetters = "Hello World".filter { it.isLowerCase() }
 
 println("$upperCaseLetters - $lowerCaseLetters") // => HW - elloorld
 ```
@@ -694,7 +698,7 @@ Un *__'closure'__* es una función que tiene acceso a variables y parámetros qu
 ```kotlin
 fun printFilteredNamesByLength(length: Int) {
     val names = arrayListOf("Adam", "Andrew", "Chike", "Kechi")
-    val filterResult = names.book.filterStrings {
+    val filterResult = names.filter {
         it.length == length     // 'length' se define fuera del ámbito de la lambda
     }
     println(filterResult)
@@ -791,14 +795,14 @@ Una clase en Kotlin puede tener un **constructor primario** y uno o más **const
 El constructor primario es parte del encabezado de la clase. Este constructor va después del nombre de la clase (y los parámetros de tipo que son opcionales). Por defecto, todos los constructores son públicos, lo que equivale efectivamente a que sean visible en todas partes donde la clase sea visible.
 
 ```kotlin
-class book.Person constructor(firstName: String) { ... }
+class Person constructor(firstName: String) { ... }
 ```
 
 Si el constructor principal no tiene anotaciones o modificadores de visibilidad, la palabra clave `'constructor'` se puede omitir:
 
 ```kotlin
 // Podemos omitir la palabra clave 'constructor'
-class book.Person(firstName: String) { ... }
+class Person(firstName: String) { ... }
 
 // Las anotaciones o modificadores de visibilidad requieren la palabra clave 'constructor'
 class Customer public @Inject constructor(name: String) { ... }
@@ -814,13 +818,13 @@ class DontCreateMe private constructor () { ... }
 Para crear una instancia de una clase, se invoca al constructor como si de una función regular se tratase. En Kotlin no existe la palabra clave _'new'_:
 
 ```kotlin
-class book.Person(val name: String) {
-    constructor(name: String, parent: book.Person) : this(name) {
+class Person(val name: String) {
+    constructor(name: String, parent: Person) : this(name) {
         parent.children.add(this)
     }
 }
 
-val person = book.Person("John")
+val person = Person("John")
 ```
 
 ##### Constructor primario
@@ -848,7 +852,7 @@ class InitOrderDemo(name: String) {
 Los bloques `'init'` pueden usarse para validar los parámetros mediante la palabra clave `'require'`:
 
 ```kotlin
-class book.Person (val firstName: String, val lastName: String, val age: Int?) {
+class Person (val firstName: String, val lastName: String, val age: Int?) {
     init{
         require(firstName.trim().length > 0) { "Invalid firstName argument." }
         require(lastName.trim().length > 0) { "Invalid lastName argument." }
@@ -872,7 +876,7 @@ class Customer(name: String) {
 De hecho, para declarar propiedades e inicializarlas desde el constructor principal, Kotlin tiene una sintaxis concisa:
 
 ```kotlin
-class book.Person(val firstName: String, val lastName: String, var age: Int) { ... }
+class Person(val firstName: String, val lastName: String, var age: Int) { ... }
 ```
 
 De la misma forma que las propiedades definidas en el cuerpo de la clase, las propiedades declaradas en el constructor primario pueden ser mutables (`'var'`) o de solo lectura (`'val'`).
@@ -884,9 +888,9 @@ Cuando se usa el prefijo `'val'` Kotlin genera automáticamente el método `'get
 La clase también puede declarar uno o varios **constructores secundarios**, que se definen con la palabra clave `'constructor'`:
 
 ```kotlin
-class book.Person {
+class Person {
     // Constructor secundario
-    constructor(parent: book.Person) {
+    constructor(parent: Person) {
         parent.children.add(this)
     }
 }
@@ -895,11 +899,11 @@ class book.Person {
 Si la clase tiene un constructor primario, cada **constructor secundario debe delegar en el constructor primario**, ya sea directamente o indirectamente a través de otro/s constructor/es secundario/s. La delegación en otro constructor de la misma clase se hace usando la palabra clave `'this'`:
 
 ```kotlin
-class book.Person(val name: String) { // Constructor primario
+class Person(val name: String) { // Constructor primario
 
     // Constructor secundario
     // Usamos 'this' para invocar al constructor primario
-    constructor(name: String, parent: book.Person) : this(name) {
+    constructor(name: String, parent: Person) : this(name) {
         parent.children.add(this)
     }
 }
@@ -925,7 +929,7 @@ En Kotlin no se utiliza el concepto de 'campo' cuando hablamos de variables de i
 Las propiedades de una clase pueden declararse como mutables _(`var`)_, o de inmutables o de sólo lectura _(`val`)_:
 
 ```kotlin
-class book.Address {
+class Address {
     var name: String = ...
     var street: String = ...
     var city: String = ...
@@ -937,8 +941,8 @@ class book.Address {
 Para acceder a las propiedades de una clase usamos el operador punto `'.'` ya que a diferencia de Java no hay que utilizar `getters()` ni `setters()` si hemos definido la propiedad con `'val'` o `'var'`. Para usar la propiedad, simplemente nos referimos a ella por su nombre, como si fuera un campo en Java:
 
 ```kotlin
-fun copyAddress(address: book.Address): book.Address {
-    val result = book.Address() // there's no 'new' keyword in Kotlin
+fun copyAddress(address: Address): Address {
+    val result = Address() // there's no 'new' keyword in Kotlin
     result.name = address.name // accessors are called
     result.street = address.street
     // ...
@@ -1240,11 +1244,11 @@ Kotlin admite **clases abstractas** al igual que Java. Una clase abstracta es un
 La subclase concreta de una clase abstracta deberá implementar todos los métodos y propiedades definidos en la clase abstracta; de lo contrario, también será considerada como una clase abstracta.
 
 ```kotlin
-open class book.Person {
+open class Person {
     open fun fullName(): String { ... }
 }
 
-abstract class Employee (val firstName: String, val lastName: String): book.Person() {
+abstract class Employee (val firstName: String, val lastName: String): Person() {
     // Variable de intancia en una clase abstracta
     val propFoo: String = "bla bla"
 
@@ -1310,7 +1314,7 @@ interface Named {
     val name: String
 }
 
-interface book.Person : Named {
+interface Person : Named {
     val firstName: String
     val lastName: String
     override val name: String get() = "$firstName $lastName"
@@ -1321,7 +1325,7 @@ data class Employee(
     override val firstName: String,
     override val lastName: String,
     val position: Position
-) : book.Person
+) : Person
 ```
 
 En el caso de clases que hereden de varias interfaces, para evitar ambigüedades la subclase deberá proporcionar implementaciones tanto para métodos que tienen una implementación en una de las interfaces como en métodos que tiene implementaciones en varias interfaces.
@@ -1471,8 +1475,6 @@ class Rectangle: Shape()
 ```
 
 ### Generics
-
-(todo)
 
 **Covarianza** y **contravarianza** son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten la covarianza y contravarianza para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, la covarianza, contravarianza e invarianza tienen las siguientes definiciones¨
 
@@ -1633,7 +1635,7 @@ val demo = OuterClass().InnerClass().innerClassFunc() // => yo
 **Las clases de enumeración son similares a los tipos _'enum'_ de Java**. El uso más básico de las clases de enumeración es la implementación de enumeraciones de tipos seguros. Cada constante de la enumeración es un objeto. Las constantes de la enumeración están separadas por comas.
 
 ```kotlin
-enum class book.Country {
+enum class Country {
     Spain, France, Portugal
 }
 ```
@@ -1673,19 +1675,19 @@ En Kotlin las enumeraciones disponen de forma predeterminada de los métodos:
 Además de los métodos las instancias de enumeración vienen con dos propiedades predefinidas. Uno es `'name'` de tipo 'String' y el segundo es `'ordinal'` de tipo 'Int' para obtener la posición de la constante dentro de la enumeración, teniendo en cuenta que empiezan por 0:
 
 ```kotlin
-enum class book.Country {
+enum class Country {
     Spain, France, Portugal
 }
 
-println(book.Country.Spain) // => Spain
-println(book.Country.valueOf("Spain")) // => Spain
+println(Country.Spain) // => Spain
+println(Country.valueOf("Spain")) // => Spain
 
-println(book.Country.Portugal.name) // => Portugal
-println(book.Country.France.ordinal) // => 1
+println(Country.Portugal.name) // => Portugal
+println(Country.France.ordinal) // => 1
 
 fun countries() {
-    for (country in book.Country.values()) {
-        println("book.Country: $country")
+    for (country in Country.values()) {
+        println("Country: $country")
     }
 }
 ```
@@ -1770,20 +1772,20 @@ Se puede llamar a los miembros del _'companion object'_ usando simplemente el no
 Un _'companion object'_ puede tener nombre que facilitará el ser invocado desde Java aunque es opcional.
 
 ```kotlin
-class book.Person private constructor(var firstName: String, var lastName: String) {
+class Person private constructor(var firstName: String, var lastName: String) {
 
     // Podemos omitir el nombre del objeto
     companion object {
         var count: Int = 0
-        fun create(firstName: String, lastName: String): book.Person = book.Person(firstName, lastName)
+        fun create(firstName: String, lastName: String): Person = Person(firstName, lastName)
 
         // Podemos tener bloques 'init' dentro de un 'companion object'
         init {
-            println("book.Person companion object created")
+            println("Person companion object created")
         }
     }
 }
-val person = book.Person.create("John", "Doe")
+val person = Person.create("John", "Doe")
 
 class MyClass {
 
@@ -1801,6 +1803,10 @@ val myClass = MyClass.create()
 MyClass().sayHello() // incorrecto
 MyClass.Factory.sayHelloFromCompanion() // Invocar un método del 'companion'
 ```
+
+## Delegated Properties
+
+(todo)
 
 ## Other
 
@@ -1940,7 +1946,7 @@ Kotlin proporciona _'higher-order functions'_ para trabajar con colecciones:
 
 ```kotlin
 val z = (1..9).map { it * 3 }
-        .book.filterStrings { it < 20 }
+        .filter { it < 20 }
         .groupBy { it % 2 == 0 }
         .mapKeys { if (it.key) "even" else "odd" }
 
@@ -2073,7 +2079,7 @@ fooNullable?.length // => null
 fooNullable?.length ?: -1 // => -1
 
 // Encadenar 'safe calls'. La cadena retorna 'null' si alguna de ellas es 'null'
-fun getCountryNameSafe(person: book.Person?): String? {
+fun getCountryNameSafe(person: Person?): String? {
     return person?.address?.city?.country?.name
 }
 
@@ -2135,15 +2141,15 @@ Son funciones que proporciona Kotlin para aumentar la biblioteca estándar de Ja
 Su uso principal es hacer que el código que necesita inicializar una instancia sea más legible permitiendo que las funciones y las propiedades se llamen directamente dentro de la función antes de devolver el valor en sí.
 
 ```kotlin
-data class book.Person(var firstName: String, var lastName : String)
-var person = book.Person("John", "Doe")
+data class Person(var firstName: String, var lastName : String)
+var person = Person("John", "Doe")
 
 person.apply { this.firstName = "Bruce" }
-print(person) // => book.Person(firstName=Bruce, lastName=Doe)
+print(person) // => Person(firstName=Bruce, lastName=Doe)
 
 // 'apply' retorna la instancia original.
 person.apply { this.firstName = "Bruce" }.firstName = "Steve"
-print(person) // => book.Person(firstName=Steve, lastName=Doe)
+print(person) // => Person(firstName=Steve, lastName=Doe)
 ```
 
 #### [Let]
@@ -2151,7 +2157,7 @@ print(person) // => book.Person(firstName=Steve, lastName=Doe)
 La función `'let'` toma el objeto sobre el que se invoca como parámetro y devuelve el resultado de la expresión lambda. Es útil cuando desea ejecutar algún código en un objeto antes de devolver algún valor diferente y no necesita mantener una referencia al original:
 
 ```kotlin
-fun book.book.book.main(args: Array<String>) {
+fun main(args: Array<String>) {
     var str = "Hello World"
     str.let { println("$it!!") } // => Hello World!!
     println(str) // => Hello World
@@ -2161,13 +2167,13 @@ var strLength = str.let { "$it function".length } // devuelve el resultado de la
 println("strLength is $strLength") // => strLength is 25
 ```
 
-### [With]
+#### [With]
 
 La función `'with'` es una función de nivel superior diseñada para los casos en los que desea llamar a múltiples funciones en un objeto y no desea repetir el receptor cada vez. La función `'with'` acepta un receptor y un cierre para operar en dicho receptor:
 
 ```kotlin
-data class book.Person(var firstName: String, var lastName : String)
-var person = book.Person("John", "Doe")
+data class Person(var firstName: String, var lastName : String)
+var person = Person("John", "Doe")
 
 with(person)
 {
@@ -2200,7 +2206,7 @@ println(name) // => John Doe
 person.run {
     this.firstName = "Bruce"
 }
-print(person) // => book.Person(firstName=Bruce, lastName=Doe)
+print(person) // => Person(firstName=Bruce, lastName=Doe)
 
 ```
 
@@ -2407,18 +2413,18 @@ Para usar la reflexión en Kotlin hay que importar el paquete `kotlin.reflect`.
 val name = "George"
 val kclass = name::class // => class kotlin.String
 
-data class book.Person(val firstName: String, val lastName: String)
-println(book.Person::class.qualifiedName) // => book.Person
-println(book.Person::class.isData) // => true
+data class Person(val firstName: String, val lastName: String)
+println(Person::class.qualifiedName) // => Person
+println(Person::class.isData) // => true
 ```
 
 Podemos obtener una referencia a la clase utilizando el _'fully qualified name or FQN'_ de la clase y la API 'reflection' de Java. Si el compilador no encuentra la clase lanza una _'ClassNotFoundException'_:
 
 ```kotlin
 package com.example
-data class book.Person(val firstName: String, val lastName: String)
+data class Person(val firstName: String, val lastName: String)
 
-val kClass = Class.forName("com.example.book.Person").kotlin // => class com.example.Personal
+val kClass = Class.forName("com.example.Person").kotlin // => class com.example.Personal
 ```
 
 Para crear instancias de tipo sin conocer el tipo en tiempo de ejecución podemos invocar la función `'createInstance()'` en una referencia de `'KClass'`. Podemos usar esta función con clases sin parámetros o con parámetros opcionales, es decir, que tengan valor por defecto:
@@ -2434,17 +2440,17 @@ fun createInteger(kclass: KClass<PositiveInteger>): PositiveInteger {
 Podemos devolver una lista de todos los constructores declarados en un tipo dado usando la propiedad `'constructor'` disponible en el tipo `'KClass'`. Podemos instanciar una clase usando el constructor con la instrucción `'call'` o `'callBy'`:
 
 ```kotlin
-class book.Person constructor(val firstName: String, val lastName: String)
+class Person constructor(val firstName: String, val lastName: String)
 
 fun <T : Any> printConstructors(kclass: KClass<T>) {
     kclass.constructors.forEach {
         println(it.parameters)
     }
 }
-printConstructors(book.Person::class) // Muestra el/los constructor/es de la clase 'book.Person'
+printConstructors(Person::class) // Muestra el/los constructor/es de la clase 'Person'
 
 // Recupera el primer constructor. Si no encuentra ninguno lanza una excepción.
-val constructor = book.Person::class.constructors.first()
+val constructor = Person::class.constructors.first()
 val person = constructor.call("John", "Doe") // Invocar al constructor con 'call'
 println(person.firstName) // => John
 ```
@@ -2452,7 +2458,7 @@ println(person.firstName) // => John
 Además de los constructores de una clase, también podemos acceder y listar las funciones de una clase con la propiedad `'functions'` disponible en el tipo `'KClass'`:
 
 ```kotlin
-class book.Person constructor(val firstName: String, val lastName: String) {
+class Person constructor(val firstName: String, val lastName: String) {
     fun getName(): String {
         return "$firstName $lastName"
     }
@@ -2464,16 +2470,284 @@ fun <T : Any> printFunctions(kclass: KClass<T>) {
     }
 }
 
-printFunctions(book.Person::class) // => getName equals hashCode toString
+printFunctions(Person::class) // => getName equals hashCode toString
 
-val function = book.Person::class.functions.find { it.name == "getName" }
-val person = book.Person("John", "Doe")
+val function = Person::class.functions.find { it.name == "getName" }
+val person = Person("John", "Doe")
 function?.call(person) // => John Doe
 ```
 
+## Coroutines
+
+(todo)
+
 ## Testing
 
-(Todo) Form Programming Kotlin Book
+KotlinTest es el framework para probar y testear el código en Kotlin. Añadir la dependencia a Gradle: `testCompile 'io.kotlintest:kotlintest:x.y.z'`.
+
+Normalmente, para mantener ordenada la estructura del proyecto los ficheros de test se ubican en `src/test/kotlin`
+
+Una especificación o _'spec'_ es simplemente la manera en que las pruebas se presentan en los archivos de clase. Hay varias especificaciones diferentes disponibles como **FunSpec**, **StringSpec+*, **ShouldSpec**. etc...
+
+La especificación **FunSpec** permite crear pruebas similares al estilo *jUnit*. Para escribir un test unitario invocamos la función _'test'_ que toma dos parámetros. El primer parámetro es una descripción de la prueba unitaria y el segundo es una función literal que contiene el cuerpo de la prueba. La descripción o nombre de la prueba aparecerá en la salida, así que permite saber que prueba/s han pasado la prueba y cuáles han fallado.
+
+```kotlin
+class StringTestWithFunSpec : FunSpec() {
+    init {
+        test("String.startsWith should be true for a prefix") {
+            "helloworld".startsWith("hello") shouldBe true
+        }
+        test("String.endsWith should be true for a prefix") {
+            "helloworld".endsWith("world") shouldBe true
+        }
+
+    }
+}
+```
+
+La especificación **StringSpec** es la especificación recomendada por los autores de Kotlin y es la especificación más simple y compacta ya que reduce la sintaxis al mínimo. Se escribe una cadena seguida de una expresión lambda para probar el código:
+
+```kotlin
+class StringTestWithStringSpec : StringSpec() {
+    init {
+        "strings.length should return size of string" {
+            "hello".length shouldBe 5
+            "hello" shouldBe haveLength(5)
+        }
+    }
+}
+```
+
+La especificación **ShouldSpec** es similar a **FunSpec** pero usa la palabra clave `'should'` en vez de `'test'`:
+
+```kotlin
+class StringTestWithShouldSpec : ShouldSpec() {
+    init {
+        should("return the length of the string") {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
+        // Nested form
+        "String.length" {
+            should("return the length of the string") {
+                "sammy".length shouldBe 5
+                "".length shouldBe 0
+            }
+        }
+    }
+}
+```
+
+La especificación **WordSpec** usa también la palabra clave `'should'`. Esta especificación permite anidar las pruebas:
+
+```kotlin
+class StringTestWithWordSpec : WordSpec() {
+    init {
+        "String.length" should {
+            "return the length of the string" {
+                "sammy".length shouldBe 5
+                "".length shouldBe 0
+            }
+        }
+    }
+}
+```
+
+La especificación **BehaviorSpec** utiliza las palabras clave `'given'`, `'when'` y `'then'` para crear pruebas unitarias más cercanas al lenguaje natural:
+
+```kotlin
+class StringTestWithBehaviorSpec : BehaviorSpec() {
+    init {
+        given("a stack") {
+            val stack = Stack<String>()
+            `when`("an item is pushed") {
+                stack.push("kotlin")
+                then("the stack should not be empty") {
+                    stack.isEmpty() shouldBe true
+                }
+            }
+            `when`("the stack is popped") {
+                stack.pop()
+                then("it should be empty") {
+                    stack.isEmpty() shouldBe false
+                }
+            }
+        }
+    }
+}
+```
+
+La especificación **FeatureSpec** es similar a la especificación **BehaviorSpec** pero utiliza las palabras clave `'feature'` y `'scenario'`:
+
+```kotlin
+class StringTestWithFeatureSpec : FeatureSpec() {
+    init {
+        feature("Hello World") {
+            scenario("should starts with 'Hello'") {
+                "Hello World".startsWith("Hello")
+            }
+            scenario("should ends with 'World'") {
+                "Hello World".endsWith("World")
+            }
+        }
+    }
+}
+```
+
+Los **matchers** prueban alguna propiedad, indicada por el nombre del **matcher**, más allá de la simple igualdad. Por ejemplo, un comparador puede verificar si una cadena está vacía o si un entero es positivo.
+
+```kotlin
+// [String matchers]
+class StringTestWithDifferentMatchers : StringSpec() {
+    init {
+        "Tests string prefixes" {
+            "Hello".startsWith("He") shouldBe true
+            "Hello" shouldBe startWith("He")
+        }
+        "Tests substrings"{
+            "Hello" shouldBe include("el")
+        }
+        "Test string suffixes" {
+            "Hello".endsWith("llo") shouldBe true
+            "Hello" shouldBe endWith("llo")
+        }
+        "Tests the length of a string" {
+            "Hello".length shouldBe 5
+            "Hello" shouldBe haveLength(5)
+        }
+        "Tests the equality using a regular expression" {
+            "Hello" shouldBe match("He...")
+        }
+    }
+}
+
+// [Collection matchers]
+class CollectionTestWithDifferentMatchers : StringSpec() {
+    private val listWithDifferentIntegers = listOf(1, 2, 3, 4, 5)
+    private val mapWithKeyAndValues = mapOf<Int, String>(1 to "Hello", 2 to "World")
+
+    init {
+        "Tests that a collection should contain the given element" {
+            listWithDifferentIntegers shouldBe contain(3)
+        }
+        "Test the size of the collection" {
+            listWithDifferentIntegers shouldBe haveSize<Int>(5)
+        }
+        "Tests that the collections should be sorted" {
+            listWithDifferentIntegers shouldBe sorted<Int>()
+        }
+        "Tests that the collection has a single element that is equal to the given element" {
+            listWithDifferentIntegers shouldNotBe singleElement(2)
+        }
+        "Tests that the collection contains all the given elements. The order of these elements does not matter." {
+            listWithDifferentIntegers shouldBe containsAll(1, 2, 4)
+        }
+        "Tests whether the collection is empty or not" {
+            listWithDifferentIntegers shouldNotBe beEmpty<Int>()
+        }
+        "Tests whether the map contains mapping from a key to any value" {
+            mapWithKeyAndValues shouldBe haveKey(2)
+        }
+        "Tests whether the map contains the value for at least one key" {
+            mapWithKeyAndValues shouldBe haveValue("Hello")
+        }
+        "Tests that the map contains the exact mapping of the key to the value" {
+            mapWithKeyAndValues shouldBe contain(2, "World")
+        }
+    }
+}
+
+// [Floating point matchers]
+// En valores en punto flotante más que la igualdad absoluta se utiliza la 'tolerancia' que es el valor mínimo entre dos valores que satisfacen el criterio de igualdad
+class FloatNumberTestWithTolerance : StringSpec() {
+    private val randomDouble = 18.005
+    private val enoughDouble = 18.006
+
+    init {
+        "Test if two numbers are equals" {
+            randomDouble shouldNotBe equals(enoughDouble)
+            randomDouble shouldBe (enoughDouble plusOrMinus 0.01)
+        }
+    }
+}
+
+// [Exception matchers]
+// 'shouldThrow fallará si se lanza una excepción diferente
+class ExceptionTest : StringSpec() {
+    init {
+        "Testing IllegalArgumentException" {
+            shouldThrow<IllegalArgumentException> {
+                addNumberToTwo(10.0) shouldEqual 10.5
+            }
+        }
+    }
+}
+
+@Throws(IllegalArgumentException::class)
+fun addNumberToTwo(a: Any): Int {
+    if (a !is Int) {
+        throw IllegalArgumentException("Number must be an integer")
+    }
+    return 2 + a
+}
+```
+
+Los **matchers** se pueden combinar usando los operadores de la lógica booleana como `'and'` y `'or'`:
+
+```kotlin
+class CombiningMatchers : StringSpec() {
+    init {
+        "Combining matchers" {
+            "Hello World" should (startWith("Hel") and endWith("rld"))
+        }
+    }
+}
+```
+
+Un **inspector** en KotlinTest es la forma más fácil de probar el contenido de _'collections'_:
+
+```kotlin
+val kings = listOf("Stephen I", "Henry I", "Henry II", "Henry III", "William I", "William III")
+
+class InspectorTests : StringSpec() {
+    init {
+        "all kings should have a regal number" {
+            forAll(kings) {
+                it should endWith("I")
+            }
+        }
+        "only one king has the name Stephen" {
+            forOne(kings) {
+                it should startWith("Stephen")
+            }
+        }
+        "some kings have regal number II" {
+            forSome(kings) {
+                it should endWith("II")
+            }
+        }
+        "at least one King has the name Henry" {
+            forAtLeastOne(kings) {
+                it should startWith("Henry")
+            }
+        }
+    }
+}
+```
+
+A veces es posible que sea necesario ejecutar algo de código, antes de que se ejecuten las pruebas o después de que se completen todas las pruebas (sean exitosas o no). Esto se puede lograr mediante el uso de la clase abstracta `'ProjectConfig'`. Para usar esto, simplemente se crea un objeto que extienda de esta clase abstracta y asegurarse que esté en la ruta de la clase. KotlinTest lo encontrará automáticamente y lo invocará:
+
+```kotlin
+object codeExecutionBeforeAndAfterTestCases : ProjectConfig() {
+    override fun beforeAll() {
+        // ...code
+    }
+
+    override fun afterAll() {
+        // ...code
+    }
+}
+```
 
 ## Java Interop
 
