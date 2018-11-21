@@ -158,9 +158,6 @@ fun main(args: Array<String>) {
     }
 
     // [Generic functions]
-    // Functions can be generic in the types they use. This allows a function
-    // to be written that can work with any type, rather than a specific type only. To do this, we
-    // define the type parameters in the function signature:
     fun <T> choose(t1: T, t2: T, t3: T): T {
         return when (Random().nextInt(3)) {
             0 -> t1
@@ -170,10 +167,10 @@ fun main(args: Array<String>) {
     }
     // We can use the function with integers
     val r = choose(5, 7, 9)
-    println(r)
+
     // Also we can use the function with strings
     val s = choose("BMW", "Audi", "Ford")
-    println(s)
+
 }
 
 // [Top-level functions]

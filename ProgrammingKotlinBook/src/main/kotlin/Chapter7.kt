@@ -67,28 +67,10 @@ fun main(args: Array<String>) {
     println(safeInt) // => null (avoid ClassCastException)
 
     // [Reflection]
-    // Reflection is the name given to inspecting code at runtime instead of compile time. It can be
-    // used to create instances of classes, look up functions and invoke them, inspect annotations,
-    // find fields, and discover parameters and generics, all without knowing those details at
-    // compile time.
-    // The Kotlin reflection classes are not part of the kotlin-stdlib library, but
-    // are instead part of an additional dependency called kotlin-reflect.
-
-    // [KClass]
-    // KClass is the central type used in Kotlin reflection. Each type has a KClass instance at
-    // runtime that contains details of the functions, properties, annotations, and so on for that
-    // type. To get an instance of a KClass for any type, we use the special ::class syntax on an
-    // instance of that type:
     val kPerson = Person::class
     println(kPerson.qualifiedName) // => Person
 
     // Instantiation using reflection
-    // One of the most common uses of reflection is to create instances of types without knowing
-    // those types at compile time. The simplest way of doing this is to use
-    // the createInstance function on a KClass reference
-    // The drawback with createInstance is that it will only work for classes with no
-    // parameters, or where all parameters are optional. A parameter is considered optional if it
-    // has a default value supplied.
     val country = Country::class.createInstance()
     println(country.name) // => No country (default value in the constructor)
 

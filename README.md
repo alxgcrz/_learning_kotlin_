@@ -1472,7 +1472,128 @@ class Rectangle: Shape()
 
 ### Generics
 
-(TODO)
+(todo)
+
+**Covarianza** y **contravarianza** son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten la covarianza y contravarianza para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, la covarianza, contravarianza e invarianza tienen las siguientes definiciones¨
+
+* *__Covariance__* -> Permite usar un tipo más derivado que el especificado originalmente. Puede asignar una instancia de `Class<Derived>` a una variable de tipo `Class<Base>`.
+
+* *__Contravariance__* -> Permite usar un tipo más genérico (menos derivado) que el especificado originalmente. Puede asignar una instancia de `Class<Base>` a una variable de tipo `Class<Derived>`.
+
+* *__Invariance__* -> Significa que solo se puede usar el tipo especificado originalmente. Así, un parámetro de tipo genérico invariable no es covariante ni contravariante. No se puede asignar una instancia de `List<Base>` a una variable de tipo `List<Derived>` o viceversa.
+
+Al igual que en Java, en Kotlin las clases pueden tener tipos con parámetros.
+
+```kotlin
+class Box<T>(t: T) {
+    var value = t
+}
+```
+
+En general, para crear una instancia de una clase genérica tenemos que proveer el tipo a la clase:
+
+```kotlin
+val box: Box<Int> = Box<Int>(1)
+```
+
+Si los parámetros se pueden inferir, como por ejemplo de los argumentos del constructor o por algún otro medio, se pueden omitir los argumentos de tipo:
+
+```kotlin
+val box = Box(1) // '1' tiene tipo Int así que el compilador infiere el tipo "Box<Int>"
+```
+
+#### La palabra clave 'out'
+
+Digamos que queremos crear una clase de productor que producirá un resultado de algún tipo 'T'. A veces; queremos asignar ese valor producido a una referencia que es de un supertipo del tipo 'T'.
+
+Para lograr eso usando Kotlin, necesitamos usar la palabra clave `'out'` en el tipo genérico. Esto significa que podemos asignar esta referencia a cualquiera de sus supertipos. El valor de salida solo puede ser producido por la clase dada pero no consumido:
+
+```kotlin
+class ParameterizedProducer<out T>(private val value: T) {
+    fun get(): T {
+        return value
+    }
+}
+
+val a = ParameterizedProducer("string") // ParameterizedProducer<String>
+val x: ParameterizedProducer<Any> = a // Correcto
+
+val b = ParameterizedProducer(10) // ParameterizedProducer<Int>
+val y: ParameterizedProducer<Number> = b // Correcto
+val z: ParameterizedProducer<String> = b // ¡Error de compilación!
+```
+
+#### La palabra clave 'in'
+
+A veces, tenemos una situación opuesta, lo que significa que tenemos una referencia de tipo T y queremos poder asignarla al subtipo de T.
+
+Podemos usar la palabra clave `'in'` en el tipo genérico si queremos asignarlo a la referencia de su subtipo. La palabra clave `'in'` solo se puede utilizar en el tipo de parámetro que se consume, no se produce:
+
+```kotlin
+class ParameterizedConsumer<in T> {
+    fun toString(value: T): String {  // 'toString()' will only be consuming a value of type T.
+        return value.toString()
+    }
+}
+
+val a = ParameterizedConsumer<Number>()
+
+val b: ParameterizedConsumer<Double> = a // Correcto
+val c: ParameterizedConsumer<Int> = a // Correcto
+val d: ParameterizedConsumer<String> = a // ¡Error de compilación!
+```
+
+#### Star projections
+
+Hay situaciones en las que no es importante el tipo específico de un valor. Para ello usamos el operador `'*'` o _'star projection'_:
+
+```kotlin
+fun printArray(array: Array<*>) {
+    array.forEach { println(it) }
+}
+
+// Podemos pasar una matriz de cualquier tipo al método 'printArray()'
+printArray(arrayOf(1,2,3))
+
+printArray(arrayOf("hello", "World!!", 5))
+```
+
+#### Generic functions
+
+Las funciones también pueden ser genéricas en los tipos que utilizan. Esto permite escribir una función que puede funcionar con cualquier tipo, en lugar de solo un tipo específico. Para ello, definimos los parámetros de tipo en la firma de función.
+
+```kotlin
+fun <T> choose(t1: T, t2: T, t3: T): T {
+    return when (Random().nextInt(3)) {
+        0 -> t1
+        1 -> t2
+        else -> t3
+    }
+}
+
+// Podemos usar esta función con enteros. Si el compilador puede inferir el tipo se puede omitir.
+val r = choose<Int>(5, 7, 9)
+val r = choose(5, 7, 9)
+
+// También es válido usar la función con Strings
+val s = choose<String>("BMW", "Audi", "Ford")
+val s = choose("BMW", "Audi", "Ford")
+```
+
+#### Generic constraints
+
+El conjunto de todos los tipos posibles que pueden sustituirse por un parámetro de tipo dado puede estar restringido por restricciones genéricas.
+
+El tipo más común de restricción es un límite superior que corresponde a la palabra clave de extensión de Java:
+
+```kotlin
+fun <T : Comparable<T>> sort(list: List<T>) {  ... }
+
+sort(listOf(1, 2, 3)) // OK. Int is a subtype of Comparable<Int>
+sort(listOf(HashMap<Int, String>())) // Error: HashMap<Int, String> is not a subtype of Comparable<HashMap<Int, String>>
+```
+
+El límite superior predeterminado (si no se especifica) es `'Any?'`.
 
 ### Nested classes
 
@@ -1826,7 +1947,7 @@ val z = (1..9).map { it * 3 }
 println(z) // => {odd=[3, 9, 15], even=[6, 12, 18]}
 ```
 
-### Rangos o intervalos
+### Rangos de valores
 
 Un rango se define como un intervalo que tiene un valor de inicio y un valor final. **Los rangos son cerrados**, lo que significa que el valor inicial y final están incluidos en el rango. Los rangos se crean con el operados `..` o con funciones como `rangeTo()` o `downTo()`.
 
@@ -2272,9 +2393,83 @@ new demo.Foo();
 demo.DemoUtils.bar();
 ```
 
-## Reflection
+## [Reflection]
 
-(todo)
+**Reflection** es el nombre dado a la inspección del código en tiempo de ejecución en lugar de tiempo de compilación. Puede usarse para crear instancias de clases, buscar funciones e invocarlas, inspeccionar anotaciones, buscar campos y descubrir parámetros y genéricos, todo sin conocer esos detalles en el momento de la compilación.
+
+Por ejemplo, si necesitamos persistir tipos en una base de datos y a priori no conocemos el tipo de datos podemos utilizar la reflexión para conocer el tipo de datos en tiempo de ejecución y crear la SQL apropiada a ese tipo.
+
+Para usar la reflexión en Kotlin hay que importar el paquete `kotlin.reflect`.
+
+`'KClass'` es el tipo central utilizado en la reflexión de Kotlin. Cada tipo tiene una instancia de `'KClass'` en tiempo de ejecución que contiene detalles de las funciones, propiedades, anotaciones, etc., para ese tipo. Para obtener una instancia de `'KClass'` para cualquier tipo, usamos la sintaxis especial `'::class'` en una instancia de ese tipo:
+
+```kotlin
+val name = "George"
+val kclass = name::class // => class kotlin.String
+
+data class Person(val firstName: String, val lastName: String)
+println(Person::class.qualifiedName) // => Person
+println(Person::class.isData) // => true
+```
+
+Podemos obtener una referencia a la clase utilizando el _'fully qualified name or FQN'_ de la clase y la API 'reflection' de Java. Si el compilador no encuentra la clase lanza una _'ClassNotFoundException'_:
+
+```kotlin
+package com.example
+data class Person(val firstName: String, val lastName: String)
+
+val kClass = Class.forName("com.example.Person").kotlin // => class com.example.Personal
+```
+
+Para crear instancias de tipo sin conocer el tipo en tiempo de ejecución podemos invocar la función `'createInstance()'` en una referencia de `'KClass'`. Podemos usar esta función con clases sin parámetros o con parámetros opcionales, es decir, que tengan valor por defecto:
+
+```kotlin
+class PositiveInteger(value: Int = 0)
+
+fun createInteger(kclass: KClass<PositiveInteger>): PositiveInteger {
+    return kclass.createInstance()
+}
+```
+
+Podemos devolver una lista de todos los constructores declarados en un tipo dado usando la propiedad `'constructor'` disponible en el tipo `'KClass'`. Podemos instanciar una clase usando el constructor con la instrucción `'call'` o `'callBy'`:
+
+```kotlin
+class Person constructor(val firstName: String, val lastName: String)
+
+fun <T : Any> printConstructors(kclass: KClass<T>) {
+    kclass.constructors.forEach {
+        println(it.parameters)
+    }
+}
+printConstructors(Person::class) // Muestra el/los constructor/es de la clase 'Person'
+
+// Recupera el primer constructor. Si no encuentra ninguno lanza una excepción.
+val constructor = Person::class.constructors.first()
+val person = constructor.call("John", "Doe") // Invocar al constructor con 'call'
+println(person.firstName) // => John
+```
+
+Además de los constructores de una clase, también podemos acceder y listar las funciones de una clase con la propiedad `'functions'` disponible en el tipo `'KClass'`:
+
+```kotlin
+class Person constructor(val firstName: String, val lastName: String) {
+    fun getName(): String {
+        return "$firstName $lastName"
+    }
+}
+
+fun <T : Any> printFunctions(kclass: KClass<T>) {
+    kclass.functions.forEach {
+        println(it.name)
+    }
+}
+
+printFunctions(Person::class) // => getName equals hashCode toString
+
+val function = Person::class.functions.find { it.name == "getName" }
+val person = Person("John", "Doe")
+function?.call(person) // => John Doe
+```
 
 ## Testing
 
