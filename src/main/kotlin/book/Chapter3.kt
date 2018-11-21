@@ -16,6 +16,8 @@
  * ***********************************************************************
  */
 
+package book
+
 import java.io.InputStream
 import java.io.OutputStream
 import java.math.BigDecimal

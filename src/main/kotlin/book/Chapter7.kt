@@ -16,8 +16,9 @@
  * ***********************************************************************
  */
 
+package book
+
 import java.io.FileNotFoundException
-import kotlin.reflect.full.createInstance
 
 /*
 *   Programming Kotlin - Packt
@@ -47,11 +48,6 @@ fun main(args: Array<String>) {
     // [Checking for null in conditions]
     var l = if (name != null) name.length else -1
 
-    // [Safe calls with ?.]
-    fun getCountryNameSafe(person: Person?): String? {
-        return person?.address?.city?.country?.name
-    }
-
     // [The !! Operator]
     // val length: Int = name!!.length
 
@@ -68,12 +64,7 @@ fun main(args: Array<String>) {
 
     // [Reflection]
     val kPerson = Person::class
-    println(kPerson.qualifiedName) // => Person
-
-    // Instantiation using reflection
-    val country = Country::class.createInstance()
-    println(country.name) // => No country (default value in the constructor)
-
+    println(kPerson.qualifiedName) // => book.Person
 
     // [@Throws]
     @Throws(FileNotFoundException::class)
@@ -82,6 +73,8 @@ fun main(args: Array<String>) {
     }
 
 }
+
+class Person constructor(val firstName: String, val lastName: String, val age: Int?)
 
 // [@JvmName]
 @JvmName("filterStrings")
@@ -94,26 +87,4 @@ fun filter(list: List<Int>): Unit {
     // ...
 }
 
-
-class Person(name: String, val address: Address?)
-class Address(name: String, postcode: String, val city: City?)
-class City(name: String, val country: Country?)
-class Country(val name: String = "No country")
-
-fun getCountryName(person: Person?): String? {
-    var countryName: String? = null
-    if (person != null) {
-        val address = person.address
-        if (address != null) {
-            val city = address.city
-            if (city != null) {
-                val country = city.country
-                if (country != null) {
-                    countryName = country.name
-                }
-            }
-        }
-    }
-    return countryName
-}
 

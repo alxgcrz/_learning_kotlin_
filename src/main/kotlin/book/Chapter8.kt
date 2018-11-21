@@ -16,6 +16,8 @@
  * ***********************************************************************
  */
 
+package book
+
 /*
 *   Programming Kotlin - Packt
 *   [Chapter 8]
@@ -27,8 +29,6 @@
 
 fun main(args: Array<String>) {
     // Parameterised functions
-    // To define a function with a type parameter, we use angle
-    // bracket (<...>) syntax, giving the type parameter a name, before the function name.
     fun <T> random(param: T): T = param
 
     fun <K, V> mapping(key: K, value: V) {}
@@ -38,15 +38,10 @@ fun main(args: Array<String>) {
     val map = mapping(1, "ES")
 
     // [Parameterized types]
-    // It is not just functions that can be parameterized types themselves can be parameterized as
-    // well. Such types are sometimes referred to as container types because of the close association
-    // with collections and the fact that they contain one or more type parameters
     class Sequence<T>
 
     class Dictionary<K, V>
 
-    // When a type has been declared with a type parameter, we must “fill in” that type when we
-    // instantiate it by replacing the parameters with concrete or proper types.
     val seq = Sequence<Int>()
     val dict = Dictionary<Int, String>()
 }

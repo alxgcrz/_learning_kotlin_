@@ -16,6 +16,8 @@
  * ***********************************************************************
  */
 
+package book
+
 import io.kotlintest.*
 import io.kotlintest.matchers.*
 import io.kotlintest.specs.*
@@ -27,15 +29,8 @@ import java.util.*
 *   - Testing in Kotlin
 */
 
-// A spec, or style, is just the manner in which the tests
-// are laid out in the class files.
-// FunSpec allows you to create tests similar to the junit style. You invoke a method called test,
-// with a string parameter to describe the test, and then the test itself
+// [FunSpec]
 class StringTestWithFunSpec : FunSpec() {
-    // To write a unit test, we invoke a function called test, which takes two parameters. The first
-    // is a description of the test, and the second is a function literal that contains the body of the
-    // test. The description, or name, of the test will appear in the output so we know which tests
-    // have failed and which have passed.
     init {
         test("String.startsWith should be true for a prefix") {
             "helloworld".startsWith("hello") shouldBe true
@@ -47,8 +42,7 @@ class StringTestWithFunSpec : FunSpec() {
     }
 }
 
-// StringSpec reduces the syntax to the absolute minimum. Just write a string followed by a
-// lambda expression with your test code.
+// [StringSpec]
 class StringTestWithStringSpec : StringSpec() {
     init {
         "strings.length should return size of string" {
@@ -58,7 +52,7 @@ class StringTestWithStringSpec : StringSpec() {
     }
 }
 
-// ShouldSpec is similar to fun spec, but uses the keyword should instead of test
+// [ShouldSpec]
 class StringTestWithShouldSpec : ShouldSpec() {
     init {
         should("return the length of the string") {
@@ -75,7 +69,7 @@ class StringTestWithShouldSpec : ShouldSpec() {
     }
 }
 
-// WordSpec uses the keyword should and uses that to nest test blocks after a context string
+// [WordSpec]
 class StringTestWithWordSpec : WordSpec() {
     init {
         "String.length" should {
@@ -87,7 +81,7 @@ class StringTestWithWordSpec : WordSpec() {
     }
 }
 
-// FeatureSpec allows you to use feature, and scenario
+// [FeatureSpec]
 class StringTestWithFeatureSpec : FeatureSpec() {
     init {
         feature("Hello World") {
@@ -101,9 +95,7 @@ class StringTestWithFeatureSpec : FeatureSpec() {
     }
 }
 
-// BehaviorSpec. The tests are
-// nested in three blocks, named given, when, and then. When combined, these blocks read
-// like a natural language sentence.
+// [BehaviorSpec]
 class StringTestWithBehaviorSpec : BehaviorSpec() {
     init {
         given("a stack") {
@@ -123,10 +115,6 @@ class StringTestWithBehaviorSpec : BehaviorSpec() {
         }
     }
 }
-
-// Matchers test for some property, indicated by the name of the matcher, beyond simple
-// equality. For example, a matcher may check whether a string is empty or whether an
-// integer is positive.
 
 // [String matchers]
 class StringTestWithDifferentMatchers : StringSpec() {
@@ -153,7 +141,6 @@ class StringTestWithDifferentMatchers : StringSpec() {
 }
 
 // [Collection matchers]
-// The next most useful set of matchers operate on collections, including lists, sets, maps, and so on
 class CollectionTestWithDifferentMatchers : StringSpec() {
     private val listWithDifferentIntegers = listOf(1, 2, 3, 4, 5)
     private val mapWithKeyAndValues = mapOf<Int, String>(1 to "Hello", 2 to "World")
@@ -190,11 +177,6 @@ class CollectionTestWithDifferentMatchers : StringSpec() {
 }
 
 // [Floating point matchers]
-// A very useful matcher is the tolerance matcher, which is defined on doubles. When testing
-// the equality of doubles, one should not use simple equals. The safest and most
-// correct way to do floating point comparison is to assert that the difference between
-// two numbers is below some value. The value chosen is the tolerance, and
-// it should be low enough to satisfy your criteria that the numbers are equal.
 class FloatNumberTestWithTolerance : StringSpec() {
     private val randomDouble = 18.005
     private val enoughDouble = 18.006
@@ -213,8 +195,10 @@ class FloatNumberTestWithTolerance : StringSpec() {
 // Note that 'shouldThrow' will also fail the test if the wrong type of exception is thrown.
 class ExceptionTest : StringSpec() {
     init {
-        shouldThrow<IllegalArgumentException> {
-            addNumberToTwo(10.0)
+        "Testing IllegalArgumentException" {
+            shouldThrow<IllegalArgumentException> {
+                addNumberToTwo(10.0) shouldEqual 12.0
+            }
         }
     }
 }
@@ -228,8 +212,6 @@ fun addNumberToTwo(a: Any): Int {
 }
 
 // [Combining matchers]
-// Matchers can be combined together using the usual Boolean logical operators of conjunction
-// (and) and disjunction (o)
 class CombiningMatchers : StringSpec() {
     init {
         "Combining matchers" {
@@ -268,11 +250,6 @@ class InspectorTests : StringSpec() {
 }
 
 // [Interceptors]
-// When moving beyond the scope of standalone unit tests and into tests that require
-// resources, it is often the case that we would need to set up these resources before a test and
-// tear them down again later.
-// This functionality exists in KotlinTest under the name of interceptors. Each type of interceptor
-// is defined to run before and after the code is tested.
 class usingInterceptors : StringSpec() {
 
     val myinterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, test ->
@@ -290,16 +267,7 @@ class usingInterceptors : StringSpec() {
     }
 }
 
-// [The spec interceptor]
-// It is used to intercept all the tests in a single test class. The spec interceptor is very similar
-// to the test case interceptor; the only difference is that the test case context is replaced by spec context.
-
 // [Project config]
-// Sometimes you may wish to execute some code before any tests are run at all or after all the
-// tests are completed (whether successful or not). This can be achieved through the use of the
-// 'ProjectConfig' abstract class. To use this, simply create an object that will extend from
-// this abstract class and ensure it is on the class path. Then, KotlinTest will automatically find
-// it and invoke it.
 object codeExecutionBeforeAndAfterTestCases : ProjectConfig() {
     override fun beforeAll() {
         // ...code
@@ -311,9 +279,6 @@ object codeExecutionBeforeAndAfterTestCases : ProjectConfig() {
 }
 
 // [Tags, conditions and config]
-// [Config]
-// Each test case makes a config function available, which can be used to set specific
-// configurations for that test, such as threading, tags, and whether the test is enabled or not.
 class ConfigExampleWithTag : ShouldSpec() {
     init {
         should("run multiple times") {
@@ -323,9 +288,6 @@ class ConfigExampleWithTag : ShouldSpec() {
 }
 
 // [Conditions]
-// Conditions are a simple way of enabling or disabling a test based on runtime evaluation.
-// The config block contains an enabled property, which is invoked before a test is executed in
-// order to access whether that test should be executed or skipped
 class ConfigExampleWithCondition : ShouldSpec() {
     private fun isMultiCore() = Runtime.getRuntime().availableProcessors() > 1
 
@@ -343,8 +305,6 @@ class ConfigExampleWithCondition : ShouldSpec() {
 }
 
 // [Tags]
-// Similar to conditions, tags allow a way of grouping tests so they can be enabled or disabled at runtime.
-// A tag is just an object that extends from the abstract class 'Tag'.
 object ElasticSearch : Tag()
 
 object Windows : Tag()
@@ -356,14 +316,7 @@ class ConfigExampleWithTags : ShouldSpec() {
     }
 }
 
-// If we were using Gradle, we could execute only these tests using the following command:
-// gradle test -DincludeTags=Windows,ElasticSearch
-// or can exclude some tests with:
-// gradle test -DexcludeTags=Windows
-
 // [One instance]
-// Sometimes, you may wish to have a fresh instance of a test class for each test that is executed.
-// To do this, simply override the 'oneInstancePerTest' property and set it to true :
 class OneInstanceOfTheseTests : ShouldSpec() {
     override val oneInstancePerTest = true
 
@@ -373,9 +326,6 @@ class OneInstanceOfTheseTests : ShouldSpec() {
 }
 
 // [Resources]
-// One final neat feature of KotlinTest is the ability to automatically close resources once all
-// the tests are completed. This is essentially a shortcut to writing an interceptor and closing
-// them yourself, and is useful if all you need to do is ensure that some handle is closed:
 class ResourceExample : StringSpec() {
     val input = autoClose(javaClass.getResourceAsStream("data.csv"))
 
