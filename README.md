@@ -1804,10 +1804,6 @@ MyClass().sayHello() // incorrecto
 MyClass.Factory.sayHelloFromCompanion() // Invocar un método del 'companion'
 ```
 
-## Delegated Properties
-
-(todo)
-
 ## Other
 
 ### Destructuring data
@@ -2259,7 +2255,7 @@ fun foo(k: Int, value: Boolean) {
 
 ### Excepciones
 
-En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene excepciones marcadas** o _'checked exceptions'_.
+En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene _'checked exceptions'_ a diferencia de Java, que realiza la distinción entre tipos de excepciones**.
 
 Para lanzar un objeto de excepción, se utiliza la palabra clave `'throw'`:
 
@@ -2355,7 +2351,7 @@ Obj.INSTANCE.foo(); // correcto
 
 ### [@Throws]
 
-Dado que todas las excepciones en Kotlin son excepciones sin marcar, no es necesario agregar una lista de posibles excepciones a las firmas de métodos como las que hay en Java. Sin embargo, es posible que deseamos informar a los usuarios de Java que nuestra API produce excepciones en ciertas situaciones. Podemos hacer esto utilizando la anotación `'@Throws'`, que se utiliza para indicar al compilador que genere cláusulas de lanzamiento en los métodos generados.
+Dado que todas las excepciones en Kotlin son _'unchecked exceptions'_, no es necesario agregar una lista de posibles excepciones a las firmas de métodos como las que hay en Java. Sin embargo, es posible que deseamos informar a los usuarios de Java que nuestra API produce excepciones en ciertas situaciones. Podemos hacer esto utilizando la anotación `'@Throws'`, que se utiliza para indicar al compilador que genere cláusulas de lanzamiento en los métodos generados.
 
 ```kotlin
 @Throws(FileNotFoundException::class)
@@ -2373,7 +2369,7 @@ Dada una función con parámetros por defecto, `'@JvmOverloads'` hará que el co
 Podemos cambiar el nombre del fichero creado por Kotlin con la anotación `'@JvmName'`:
 
 ```kotlin
-// example.kt
+// example.kt (sin @JvmName)
 package demo
 
 class Foo
@@ -2398,6 +2394,10 @@ fun bar() { ... }
 new demo.Foo();
 demo.DemoUtils.bar();
 ```
+
+### [@JvmMultifileClass]
+
+Además de indicarle al compilador el nombre del fichero con `'@JvmName'` podemos indicarle que combine todas las funciones de nivel superior de varios ficheros en Kotlin en una única clase Java con la anotación `'@JvmMultifileClass'`.
 
 ## [Reflection]
 
@@ -2753,11 +2753,172 @@ object codeExecutionBeforeAndAfterTestCases : ProjectConfig() {
 
 ### Calling Java from Kotlin
 
-(todo)
+Kotlin está diseñado teniendo en cuenta la interoperabilidad de Java. El código Java existente puede llamarse desde Kotlin de una manera natural, y el código Kotlin también se puede usar desde Java sin problemas.
+
+Casi todo el código de Java se puede utilizar sin problemas:
+
+```kotlin
+import java.util.*
+
+fun demo(source: List<Int>) {
+    val list = ArrayList<Int>()
+    // 'for'-loops work for Java collections:
+    for (item in source) {
+        list.add(item)
+    }
+    // Operator conventions work as well:
+    for (i in 0..source.size - 1) {
+        list[i] = source[i] // get and set are called
+    }
+}
+```
+
+#### 'Getters' and 'Setters'
+
+Los métodos que siguen las convenciones de Java para _'getters'_ y _'setters'_ (métodos sin argumentos con nombres que comienzan con 'get' y métodos con argumentos únicos con nombres que comienzan con 'set') se representan como **propiedades** en Kotlin.
+
+Los métodos de acceso booleanos (donde el nombre del _'getter'_ comienza con 'is' y el nombre del _'setter'_ comienza con 'set') se representan como propiedades que tienen el mismo nombre que el método _'getter'_:
+
+```kotlin
+import java.util.Calendar
+
+fun calendarDemo() {
+    val calendar = Calendar.getInstance()
+    if (calendar.firstDayOfWeek == Calendar.SUNDAY) {  // call getFirstDayOfWeek()
+        calendar.firstDayOfWeek = Calendar.MONDAY      // call setFirstDayOfWeek()
+    }
+    if (!calendar.isLenient) {                         // call isLenient()
+        calendar.isLenient = true                      // call setLenient()
+    }
+}
+```
+
+Si la clase Java solo tiene un _'setter'_, no será visible como una propiedad en Kotlin, ya que Kotlin no admite propiedades que tengan únicamente el método _'setter'_.
+
+#### 'Void' como retorno
+
+Si un método Java devuelve `'void'`, devolverá `'Unit'` cuando se llame desde Kotlin. Si, por casualidad, alguien usa ese valor de retorno, el compilador de Kotlin lo asignará en el sitio de la llamada, ya que el valor en sí mismo se conoce de antemano (es `'Unit'`).
+
+#### Escapar palabras clave en Kotlin
+
+Algunas de las palabras clave de Kotlin son identificadores válidos en Java, como por ejemplo `'in'`, `'object'`, `'is'`, etc... Si una biblioteca de Java usa una palabra clave de Kotlin para un método, se puede escapar usando las comillas invertidas (`):
+
+```kotlin
+// Java
+public class Date {
+    public void when(str:String) { .... }
+}
+
+// Kotlin
+date.`when`("2016")
+```
+
+#### Null-Safety
+
+Cualquier referencia en Java puede ser nula, lo que hace que los requisitos de Kotlin de seguridad con los valores nulos no sean prácticos para los objetos procedentes de Java. Los tipos de declaraciones de Java se tratan especialmente en Kotlin y se llaman `'platform types'`. Los controles nulos son relajados para tales tipos, por lo que las garantías de seguridad para ellos son las mismas que en Java.
+
+```kotlin
+val list = ArrayList<String>() // non-null (constructor result)
+list.add("Item")
+val size = list.size // non-null (primitive int)
+val item = list[0] // platform type inferred (ordinary Java object)
+
+item.substring(1) // allowed, may throw an exception if item == null
+```
+
+#### 'Checked exceptions'
+
+Kotlin no tiene _'checked exceptions'_. Por lo tanto, los métodos Java que tienen _'checked exceptions'_ se tratan de la misma manera que el resto de métodos.
 
 ### Calling Kotlin from Java
 
 (todo)
+
+Al igual que Java se puede usar sin problemas en Kotlin, Kotlin se puede usar fácilmente desde Java.
+
+#### Top-level functions
+
+La JVM no admite funciones de nivel superior. Por lo tanto, para hacer que funcionen con Java, el compilador Kotlin crea una clase Java con el nombre del paquete. Las funciones se definen luego como métodos estáticos Java en esta clase, que deben ser instanciados antes de su uso.
+
+```kotlin
+// Kotlin
+package org.example.utils
+fun cube(n: Int): Int = n * n * n
+
+// Java
+import org.example.utils.Utils;
+UtilsKt.cube(3);
+```
+
+Como se indica en la sección de "Anotaciones", podemos indicar al compilador el nombre del fichero con la anotación `'@JvmName'`:
+
+```kotlin
+// Kotlin
+@file:JvmName("Utils")
+package org.example.utils
+fun cube(n: Int): Int = n * n * n
+
+// Java
+import org.example.utils.Utils;
+Utils.cube(3);
+```
+
+#### Default parameters
+
+la JVM no tiene soporte para los parámetros por defecto. Por lo tanto, cuando una función se define con los valores predeterminados, el compilador debe crear una sola función sin los parámetros predeterminados. Sin embargo, podemos indicarle al compilador que cree múltiples sobrecargas de la función para cada parámetro predeterminado con la anotación `'@JvmOverloads'`. Luego, los usuarios de Java pueden ver las diversas funciones y elegir cuál es la más adecuada. Esta anotación funciona tanto para constructores, funciones o métodos estáticos:
+
+```kotlin
+// Kotlin
+class Foo @JvmOverloads constructor(x: Int, y: Double = 0.0) {
+    @JvmOverloads fun f(a: String, b: Int = 0, c: String = "abc") { ... }
+}
+
+// Java
+// Constructors:
+Foo(int x, double y)
+Foo(int x)
+
+// Methods
+void f(String a, int b, String c) { }
+void f(String a, int b) { }
+void f(String a) { }
+```
+
+#### Objects and static methods
+
+Los _'named objects'_ y los _'companion objects'_ se generan como instancias **'singleton'** de una clase. Sin embargo, podemos indicar al compilador que genere la función como una método estático en Java con la anotación `'@JvmStatic'`:
+
+```kotlin
+// Kotlin
+object Console {
+    fun clear() : Unit { } // Normal
+    @JvmStatic fun exit() : Unit { } // Con anotación
+}
+
+// Java
+Console.INSTANCE.clear() // Normal
+Console.exit() // Con anotación
+```
+
+#### Checked exceptions
+
+En Java, solo podemos detectar las _'checked exceptions'_  si están declaradas en el método, incluso si el cuerpo del método lanza esa excepción. Por lo tanto, si tenemos una función que se utilizará desde Java y queremos permitir que las personas detecten una excepción, debemos informar al compilador para que agregue la excepción a la firma del método. Para ello usamos la anotación `'@Throws'`:
+
+```kotlin
+// Kotlin
+@Throws(IOException::class)
+fun createDirectory(file: File) {
+    if (file.exists()) throw IOException("Directory already exists")
+    file.createNewFile()
+}
+
+// Java
+try {
+    UtilsKt.createDirectory(new File("file.txt"));
+} catch (IOException e) {
+    // handle exception here
+}
+```
 
 ---
 
