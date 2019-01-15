@@ -1,4 +1,5 @@
-*.bat
+## Ignoring update.bat
+update.bat
 
 # Created by https://www.gitignore.io/api/java,gradle,kotlin,windows,intellij+all,androidstudio
 

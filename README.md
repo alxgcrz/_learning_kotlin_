@@ -1,4 +1,4 @@
-# Apuntes de [Kotlin] - WIP
+# Apuntes de [Kotlin]
 
 Compilar el código: `$ kotlinc name.kt -include-runtime -d name.jar`
 
@@ -8,7 +8,7 @@ Ejecutar la consola 'REPL': `$ kotlinc-jvm`
 
 Usar la línea de comandos para ejecutar scripts (.kts): `$ kotlinc -script name.kts [params]`
 
-Compilar una librería sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
+Compilar una biblioteca sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
 
 Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
@@ -312,7 +312,7 @@ val myArray = arrayOf<Int>(1, 2, 3, 4)
 println(myArray.contentToString()) // => [1, 2, 3, 4]
 ```
 
-La librería estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `'intArrayOf()'`, `'longArrayOf()'`, `'charArrayOf()'`, `'doubleArrayOf()'`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
+La biblioteca estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `'intArrayOf()'`, `'longArrayOf()'`, `'charArrayOf()'`, `'doubleArrayOf()'`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
 
 ```kotlin
 val cards = intArrayOf(10, 11, 12) // IntArray
@@ -2916,7 +2916,7 @@ try {
 
 ---
 
-## _CHEAT SHEET_
+## Summary
 
 ### BASICS
 
@@ -3258,7 +3258,7 @@ print(a) // Prints: 10
 
 ---
 
-PDF version: [Kotlin.pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-kotlin/master/Kotlin.pdf)
+PDF version: [Kotlin[ES].pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-kotlin/master/Kotlin[ES].pdf)
 
 ## Reference
 
@@ -3268,8 +3268,9 @@ PDF version: [Kotlin.pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-kotl
 * <https://learnxinyminutes.com/docs/kotlin/>
 * <https://gist.github.com/dodyg/5823184>
 * <https://gist.github.com/dodyg/5616605>
+* <https://github.com/Zhuinden/guide-to-kotlin>
 
-## License
+### License
 
 [![Licencia de Creative Commons](https://i.creativecommons.org/l/by-sa/4.0/80x15.png)](http://creativecommons.org/licenses/by-sa/4.0/)  
 Esta obra está bajo una [licencia de Creative Commons Reconocimiento-Compartir Igual 4.0 Internacional](http://creativecommons.org/licenses/by-sa/4.0/).
