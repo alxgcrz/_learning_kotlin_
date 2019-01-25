@@ -12,9 +12,29 @@ Compilar una biblioteca sin la 'runtime' para ser usada en otros programas: `$ k
 
 Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
+## Features
+
+Un lenguaje de programación se diseña generalmente con un propósito específico en mente. Este propósito puede ser cualquier cosa, desde servir a un entorno específico (por ejemplo, la web) hasta un determinado paradigma (por ejemplo, la programación funcional). En el caso de **Kotlin** el objetivo es construir un lenguaje productivo y pragmático, que tenga todas las características que un desarrollador necesita y que sea fácil de usar.
+
+Kotlin fue diseñado inicialmente para trabajar con otros lenguajes de JVM, pero ahora ha evolucionado para ser mucho más: también funciona en el navegador y como una aplicación nativa.
+
+Kotlin es multiparadigma, con soporte para paradigmas de programación orientados a objetos, procedimentales y funcionales, sin forzar el uso de ninguno de ellos. Por ejemplo, a diferencia de Java, puede definir funciones como de nivel superior, sin tener que declararlas dentro de una clase.
+
+* 100% interoperable con Java
+* 100% compatible con Java 6, por lo que puede crear aplicaciones para la mayoría de los dispositivos Android
+* Se ejecuta en la JVM, puede transpilarse (traducirse) a JavaScript e incluso puede ejecutarse de forma nativa, con interoperabilidad con las bibliotecas C y Objective-C (macOs e iOS).
+* No hay necesidad de terminar las frases con punto y coma `;`. Los bloques de código están delimitados por corchetes `{ }`
+* Soporte de primera clase para valores constantes y colecciones inmutables (ideal para programación paralela y funcional)
+* Las funciones pueden ser elementos de nivel superior (es decir, no hay necesidad de poner todo dentro de una clase).
+* Las funciones son ciudadanos de primera clase: pueden transmitirse como cualquier otro tipo y utilizarse como argumento de las funciones. Lambda (es decir, funciones anónimas) son muy compatibles con la biblioteca estándar
+* No hay una palabra clave `static`, sino que hay mejores alternativas
+* Clases de datos, clases especiales diseñadas para contener datos
+* Todo es una expresión: `if`, `for`, etc. todos pueden devolver valores
+* La expresión `when` es como un interruptor con superpoderes
+
 ## Sintaxis básica
 
-El punto de entrada en un programa escrito en Kotlin (y en Java) es la función *__'main'__*. Esta función recibe un array que contiene los argumentos de la línea de comandos. Las funciones y variables en Kotlin pueden declararse en un "nivel superior", es decir, directamente dentro de un paquete.
+El punto de entrada en un programa escrito en Kotlin (y en Java) es la función *__'main'__*. Esta función recibe un array que contiene los argumentos de la línea de comandos. Las funciones y variables en Kotlin pueden declararse en un **"nivel superior"**, es decir, directamente dentro de un paquete.
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -42,7 +62,7 @@ fun processDeclarations() { ... }
 var declarationCount = ...
 ```
 
-Los nombres de las constantes (propiedades marcadas con _const_) deben usar nombres en mayúsculas y separados por un guión bajo:
+Los nombres de las constantes (propiedades marcadas con `const`) deben usar nombres en mayúsculas y separados por un guión bajo:
 
 ```kotlin
 const val MAX_COUNT = 8
@@ -53,7 +73,14 @@ val USER_NAME_FIELD = "UserName"
 
 En Kotlin, **todo es un objeto** en el sentido de que podemos llamar funciones y propiedades de miembro en cualquier variable. Algunos de los tipos como los números, los caracteres o los booleanos pueden tener una representación interna especial que se representa como valores primitivos en tiempo de ejecución, pero para el usuario se comportan como clases ordinarias.
 
-La declaración de valores se realiza utilizando `var` o `val`. Las variables declaradas como `val` son inmutables o 'read-only', es decir, no se pueden reasignar, mientras que las `var` son mutables y por tanto se le pueden asignar un nuevo valor pero únicamente del mismo tipo declarado. La recomendación es crear variables inmutables, que son más seguras en entornos _'multithreading'_ ya que no se pueden modificar y utilizar las variables mutables cuando sea necesario.
+La declaración de valores se realiza utilizando `var` o `val`:
+
+* Los **valores constantes** se declaran como `val` y son inmutables o _'read-only'_, es decir, que no se pueden reasignar.
+* Las **variables** se declaran como `var` y son mutables, por lo que se le pueden asignar un nuevo valor pero únicamente del mismo tipo declarado.
+
+La recomendación es crear valores constantes inmutables, que son más seguras en entornos _'multithreading'_ ya que no se pueden modificar y utilizar las variables mutables cuando sea necesario.
+
+Este soporte de primera clase para los valores constantes es importante por una razón: la programación funcional. En la programación funcional, el uso de los valores constantes permiten algunas optimizaciones que aumentan el rendimiento. Por ejemplo, los cálculos pueden ser paralelos ya que existe una garantía de que el valor no cambiará entre dos ejecuciones paralelas, dado que no puede cambiar.
 
 ```kotlin
 val fooVal = 10 // val es inmutable y no se podrá ser reutilizada
@@ -63,12 +90,12 @@ var fooVar = 10
 fooVar = 20 // 'fooVar' se puede le puede asignar un nuevo valor pero únicamente del mismo tipo.
 ```
 
-En la mayoría de los casos, Kotlin puede determinar o inferir cuál es el tipo de una variable, por lo que no tenemos que especificarla explícitamente. Cuando la variable no se inicialice deberemos indicar explícitamente el tipo de la variable.
+En la mayoría de los casos, Kotlin puede determinar o inferir cuál es el tipo de una variable, por lo que no tenemos que especificarla explícitamente. Cuando la variable **no se inicialice deberemos indicar explícitamente el tipo de la variable**.
 
 ```kotlin
 val foo: Int = 7
 val bar = 10 // Kotlin infiere automáticamente el tipo
-val hello = "Hello"
+val hello: String // Si no se inicializa hay que especificar el tipo
 ```
 
 Kotlin proporciona los siguientes tipos que representan números:
@@ -104,9 +131,9 @@ val otherLong = int.toLong()
 val direct = 25.toLong()
 ```
 
-### Cadenas
+### Cadenas o _Strings_
 
-Las cadenas son secuencias de caracteres **inmutables** y se representan con el tipo `String` de manera similar a Java. Las cadenas se crean usando las comillas dobles. El escapado de caracteres se hace con una barra invertida `'\'`.
+Las cadenas son **secuencias de caracteres inmutables** y se representan con el tipo `String` de manera similar a Java. Las cadenas se crean usando las comillas dobles. El escapado de caracteres se hace con una barra invertida `'\'`.
 
 ```kotlin
 val fooString = "My String Is Here!"
@@ -134,17 +161,19 @@ val s = "abc" + 1
 println(s + "def")
 ```
 
-Una cadena sin formato está delimitada por una comilla triple ("""). Las cadenas sin formato pueden contener nuevas líneas y cualquier otro carácter:
+Una cadena sin formato está delimitada por una comilla triple ("""). Las cadenas sin formato pueden contener nuevas líneas y cualquier otro carácter. Estas cadenas sin formato también tiene soporte para las _'string templates'_:
 
 ```kotlin
 val fooRawString = """
 fun helloWorld(val name : String) {
     println("Hello, world!")
 }
+val hello = $who
+val result = ${2 + 2}
 """
 ```
 
-Las cadenas pueden contener expresiones de plantilla o _'template expressions'_. Una expresión de plantilla comienza con un signo de dólar (`$`). Estas _template expressions_ son una forma simple y efectiva de incrustar valores, variables o incluso expresiones dentro de una cadena que serán evaluadas y cuyo resultado se concatenará a la cadena resultante.
+Las cadenas pueden contener expresiones de plantilla o _'template expressions'_, también conocido como _'string interpolation'_. Una expresión de plantilla comienza con un signo de dólar (`$`). Estas _template expressions_ son una forma simple y efectiva de incrustar valores, variables o incluso expresiones dentro de una cadena que serán evaluadas y cuyo resultado se concatenará a la cadena resultante.
 
 ```kotlin
 val name = "John Doe"
@@ -206,6 +235,8 @@ Multi-line comments look like this.
 
 ### Control de flujo y bucles
 
+Kotlin tiene 4 construcciones de control de flujo: `if`, `when`, `for` y `while`.  `if` y `when` son expresiones, por lo que devuelven un valor; `for` y `when` son declaraciones, por lo que no devuelven un valor. `if` y `when` también se pueden utilizar como sentencias, es decir, se pueden utilizar de forma autónoma y sin devolver un valor.
+
 Un bucle `for` puede usarse con cualquier elemento que proporcione un iterador como rangos, colecciones, etc...:
 
 ```kotlin
@@ -251,9 +282,19 @@ if (a > b) {
 
 // As expression
 val max = if (a > b) a else b
+
+// With blocks
+// returns a or 5
+var top = if (a > 5) {
+    println("a is greater than 5")
+    a
+} else {
+    println("5 is greater than a")
+    5
+}
 ```
 
-Los bloques `when` se pueden usar como una alternativa a las cadenas `if-else-if`:
+Los bloques `when` se pueden usar como una alternativa a las cadenas `if-else-if` o en substitución de los `switch`:
 
 ```kotlin
 when {
@@ -274,7 +315,7 @@ when (i) {
 }
 ```
 
-La instrucción `when` se puede utilizar como una expresión que devuelve un valor. En este caso el bloque `else` es obligatorio.
+La instrucción `when` se puede utilizar como una expresión que devuelve un valor. En este caso el bloque `else` es **obligatorio**. De hecho, la única excepción a esta regla es si el compilador puede garantizar que siempre devuelve un valor. Por lo tanto, si las ramas normales cubren todos los valores posibles, entonces no hay necesidad de una rama `else`:
 
 ```kotlin
 val result = when (i) {
@@ -283,14 +324,40 @@ val result = when (i) {
     else -> "none of the above"
 }
 println(result)
+
+val check = true
+// All results are covered
+val result = when(check) {
+    true -> println("it's true")
+    false -> println("it's false")
+}
 ```
 
 Se pueden utilizar expresiones arbitrarias, y no solo constantes, como condiciones en los bloques:
 
 ```kotlin
-when (x) {
-    parseInt(s) -> print("s encodes x")
-    else -> print("s does not encode x")
+var result = when(number) {
+    0 -> "Invalid number"
+    1, 2 -> "Number too low"
+    3 -> "Number correct"
+    in 4..10 -> "Number too high, but acceptable"
+    !in 100..Int.MAX_VALUE -> "Number too high, but solvable"
+    else -> "Number too high"
+}
+```
+
+Lo que no puede hacer es usar condiciones que devuelven tipos incompatibles. En una condición, puede usar una función que acepte cualquier argumento, pero debe devolver un tipo compatible con el tipo del argumento de la construcción `when`:
+
+```kotlin
+var result = when(number) {
+    0 -> "Invalid number"
+    // OK: check returns an Int
+    check(number) -> "Valid number"
+    // OK: check returns an Int, even though it accepts a String argument
+    checkString(text) -> "Valid number"
+    // ERROR: not valid
+    false -> "Invalid condition"
+    else -> "Number too high"
 }
 ```
 
@@ -346,7 +413,7 @@ for ((index, value) in cardNames.withIndex()) {
 
 ## Funciones
 
-Las funciones se declaran usando la palabra clave `'fun'`. Los nombres de las funciones empiezan con minúscula. Los parámetros de la función se especifican entre paréntesis después del nombre de la función y tienen la forma `'name: type'`. El tipo de cada parámetro debe especificarse explícitamente.
+Las funciones se declaran usando la palabra clave `'fun'`. Los nombres de las funciones empiezan con minúscula. Los parámetros de la función se especifican entre paréntesis después del nombre de la función y tienen la forma `'name: type'`. El **tipo de cada parámetro debe especificarse explícitamente** y no puede omitirse.
 
 ```kotlin
 fun powerOf(number: Int, exponent: Int) { ... }
@@ -402,7 +469,7 @@ double calCircumference(double radius, double pi);
 double calCircumference(double radius);
 ```
 
-Cuando una función no devuelve ningún valor significativo, su tipo de devolución es `Unit` por defecto. En ese caso es opcional indicar el tipo de retorno. El tipo `Unit` es un objeto en Kotlin que es similar a los tipos `void` en Java y C.
+Cuando una función no devuelve ningún valor significativo, su tipo de devolución por defecto es `Unit`. En ese caso indicar el tipo de retorno es opcional. El tipo `Unit` es un objeto en Kotlin que es similar a los tipos `void` en Java y C.
 
 ```kotlin
 fun hello(name: String): Unit {
@@ -580,7 +647,11 @@ val morning: (String) -> Unit = { x -> println(x) }
 morning("good morning") // => good morning
 ```
 
-Función _'lambda'_ con dos parámetros:
+En particular, una **lambda** es una función literal: una función anónima que no se declara pero se usa directamente como una expresión.
+
+Básicamente, una lambda es un bloque de código que se puede pasar como cualquier otro literal (por ejemplo, simplemente como una cadena literal `"una cadena"`). La combinación de estas características permite a Kotlin soportar la programación funcional básica.
+
+Por ejemplo tenemos una función _'lambda'_ con dos parámetros:
 
 ```kotlin
 val sum: (Int, Int) -> Int = { x, y -> x + y }
@@ -762,13 +833,15 @@ Con este mecanismo, nuestro código se ha optimizado significativamente, no más
 
 ### Clases
 
-Las clases son los bloques de construcción principales de cualquier lenguaje de programación orientado a objetos. Para definir una clase se usa la palabra clave `'class'`.
+Las clases son los bloques de construcción principales de cualquier lenguaje de programación orientado a objetos. Las clases son esencialmente **tipos personalizados**: un grupo de variables y métodos unidos en una estructura coherente. Para definir una clase se usa la palabra clave `'class'`.
 
 ```kotlin
 class Invoice { ... }
 ```
 
-La declaración de clase consiste en el nombre de la clase, el encabezado de la clase (especificando sus parámetros de tipo, el constructor primario, etc.) y el cuerpo de clase, rodeado de llaves. Tanto el encabezado como el cuerpo son opcionales. Si la clase no tiene cuerpo se pueden omitir las llaves. Si no se especifica visibilidad, la visibilidad por defecto es **public** y por tanto cualquiera puede crear instancias de dicha clase.
+La declaración de clase consiste en el nombre de la clase, el encabezado de la clase (especificando sus parámetros de tipo, el constructor primario, etc.) y el cuerpo de clase, rodeado de llaves. Tanto el encabezado como el cuerpo son opcionales. Si la clase no tiene cuerpo se pueden omitir las llaves.
+
+Si no se especifica visibilidad, la visibilidad por defecto es `public` y por tanto cualquiera puede crear instancias de dicha clase.
 
 ```kotlin
 class Empty
@@ -845,7 +918,7 @@ class InitOrderDemo(name: String) {
 }
 ```
 
-Los bloques `'init'` pueden usarse para validar los parámetros mediante la palabra clave `'require'`:
+Los bloques `'init'` pueden usarse para validar las propiedades o parámetros mediante la palabra clave `'require'`:
 
 ```kotlin
 class Person (val firstName: String, val lastName: String, val age: Int?) {
@@ -869,7 +942,7 @@ class Customer(name: String) {
 }
 ```
 
-De hecho, para declarar propiedades e inicializarlas desde el constructor principal, Kotlin tiene una sintaxis concisa:
+De hecho, para **declarar propiedades** e inicializarlas desde el constructor principal, Kotlin tiene una sintaxis concisa:
 
 ```kotlin
 class Person(val firstName: String, val lastName: String, var age: Int) { ... }
@@ -878,6 +951,16 @@ class Person(val firstName: String, val lastName: String, var age: Int) { ... }
 De la misma forma que las propiedades definidas en el cuerpo de la clase, las propiedades declaradas en el constructor primario pueden ser mutables (`'var'`) o de solo lectura (`'val'`).
 
 Cuando se usa el prefijo `'val'` Kotlin genera automáticamente el método `'getter()'` y cuando se usa el prefijo `'var'` Kotlin genera el `'getter()'` y `'setter()'`. Si no necesitamos los accesores se puede definir el constructor sin los prefijos. De esta forma podemos definir nuestros propios métodos accesores.
+
+En este ejemplo, el constructor principal de la primera clase define las propiedades, mientras que el segundo no lo hace:
+
+```kotlin
+// class with primary constructor that defines properties
+class Info (var name: String, var number: Int)
+
+// class with primary constructor that does not define properties
+class Info (name: String, number: Int)
+```
 
 ##### Constructor secundario
 
@@ -917,6 +1000,10 @@ class Constructors {
     }
 }
 ```
+
+La diferencia importante entre los constructores secundarios y primarios es que los parámetros de los constructores primarios pueden definir propiedades, mientras que los parámetros de un constructor secundario siempre son solo parámetros.
+
+Si los parámetros de un constructor primario también son propiedades, serán accesibles a lo largo de todo el ciclo de vida del objeto, al igual que las propiedades normales. Mientras que, si son simples parámetros, obviamente sólo son accesibles dentro del constructor, como cualquier otro parámetro de una función.
 
 #### Propiedades
 
@@ -1077,16 +1164,17 @@ Sample().foo() // crea una instancia de 'Sample' e invoca el método 'foo'
 
 ### Herencia
 
-La herencia es fundamental para la programación orientada a objetos. Nos permite crear nuevas clases que reutilizan, amplían y/o modifican el comportamiento de los preexistentes. La clase preexistente se llama la **superclase** (o clase base o padre), y la clase nueva que estamos creando se llama la **clase derivada**. Una clase derivada obtendrá implícitamente todos los campos, propiedades y métodos de la superclase (y de la superclase de la superclase si es el caso).
+La herencia es fundamental para la programación orientada a objetos. Nos permite crear nuevas clases que reutilizan, amplían y/o modifican el comportamiento de los preexistentes. La clase preexistente se llama **superclase** (o clase base), y la clase nueva que estamos creando se llama **clase derivada**. Una clase derivada obtendrá implícitamente todos los campos, propiedades y métodos de la superclase (y de la superclase de la superclase si es el caso).
 
-Hay una restricción en cuanto a cuántas clases podemos heredar; en una JVM, solo puede tener una clase base. Pero se puede heredar de múltiples interfaces.
+Hay una restricción en cuanto a cuántas clases podemos heredar; en una JVM, solo puede tener **una clase base**. Pero se puede heredar de múltiples interfaces.
 
 La herencia es transitiva. Si la clase C se deriva de la clase B y esa clase B se deriva de una clase A dada, entonces la clase C es una clase derivada de A.
 
-Todas las clases en Kotlin tienen una superclase común `'Any'`, que es la superclase predeterminada para una clase sin supertipos declarados:
+Todas las clases en Kotlin tienen una superclase común `'Any'`, que es la superclase predeterminada para una clase sin supertipos declarados. Esta clase `'Any'` tiene unos pocos métodos básicos como `equals()` o `toString()`:
 
 ```kotlin
-class Example // Hereda de 'Any' implicitamente
+// Hereda de 'Any' implicitamente
+class Example
 ```
 
 Para declarar que una clase hereda de una clase base, colocamos el tipo de la clase base después de dos puntos en el encabezado de la clase derivada. Por defecto en Kotlin las clases están cerradas a la herencia, es decir, son `'final'`. Para permitir que una clase sea heredada, hay que utilizar la palabra clave `'open'`.
@@ -1094,6 +1182,7 @@ Para declarar que una clase hereda de una clase base, colocamos el tipo de la cl
 ```kotlin
 open class Base(p: Int)
 
+// the derived class has a primary constructor
 class DerivedWithConstructor(p: Int) : Base(p)
 ```
 
@@ -1107,14 +1196,16 @@ open class Base(p: Int) {
 }
 
 class DerivedWithoutConstructor : Base {
+    // calling the base constructor with super()
     constructor(p: Int) : super(p)
-    // constructor(p: Int, q: Int) : super(p, q)
 }
+
+
 ```
 
 #### Sobreescritura de métodos
 
-Kotlin requiere anotaciones explícitas para la sobreescritura de funciones miembro.
+Kotlin requiere **anotaciones explícitas** para la sobreescritura de funciones miembro.
 
 Para que una función pueda ser sobreescrita se utiliza la palabra clave `'open'` delante del nombre de la función. Dado que las clases son **finales** en Kotlin, sólo podemos utilizar la palabra clave `'open'` en funciones miembro de clases que también hayan sido definidas como `'open'`.
 
@@ -1388,10 +1479,10 @@ De forma automática el compilador crear los métodos `hashCode()`, `equals()`, 
 
 Para evitar comportamientos extraños estas clases deben **cumplir ciertos requisitos**:
 
-* El constructor primario necesita tener al menos un parámetro
-* Todos los parámetros del constructor primario estarán marcados como `'val'` o `'var'`
-* Una _'data class'_ no puede ser `'abstract'`, `'open'`, `'sealed'` o `'inner'`
-* (Antes de 1.1) Las _'data classes'_ no pueden extender de otras clases (pero pueden implementar interfaces)
+* El constructor primario necesita tener al menos un parámetro.
+* Todos los parámetros del constructor primario estarán marcados como `'val'` o `'var'`.
+* Una _'data class'_ no puede ser `'abstract'`, `'open'`, `'sealed'` o `'inner'`.
+* (Antes de 1.1) Las _'data classes'_ no pueden extender de otras clases (pero pueden implementar interfaces).
 
 El compilador sólo tiene en cuenta las propiedades declaradas en el constructor primario a la hora de generar los métodos de forma automática. Por tanto, para excluir propiedades se deben declarar en el cuerpo de la clase.
 
@@ -1472,13 +1563,13 @@ class Rectangle: Shape()
 
 ### Generics
 
-**Covarianza** y **contravarianza** son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten la covarianza y contravarianza para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, la covarianza, contravarianza e invarianza tienen las siguientes definiciones¨
+*__'Covariance'__* y *__'contravariance'__* son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten estos términos para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, se definen como:
 
-* *__Covariance__* -> Permite usar un tipo más derivado que el especificado originalmente. Puede asignar una instancia de `Class<Derived>` a una variable de tipo `Class<Base>`.
+* *__'Covariance'__* -> Permite usar un tipo más derivado que el especificado originalmente. Puede asignar una instancia de `Class<Derived>` a una variable de tipo `Class<Base>`.
 
-* *__Contravariance__* -> Permite usar un tipo más genérico (menos derivado) que el especificado originalmente. Puede asignar una instancia de `Class<Base>` a una variable de tipo `Class<Derived>`.
+* *__'Contravariance'__* -> Permite usar un tipo más genérico (menos derivado) que el especificado originalmente. Puede asignar una instancia de `Class<Base>` a una variable de tipo `Class<Derived>`.
 
-* *__Invariance__* -> Significa que solo se puede usar el tipo especificado originalmente. Así, un parámetro de tipo genérico invariable no es covariante ni contravariante. No se puede asignar una instancia de `List<Base>` a una variable de tipo `List<Derived>` o viceversa.
+* *__'Invariance'__* -> Significa que solo se puede usar el tipo especificado originalmente. Así, un parámetro de tipo genérico invariable no es covariante ni contravariante. No se puede asignar una instancia de `List<Base>` a una variable de tipo `List<Derived>` o viceversa.
 
 Al igual que en Java, en Kotlin las clases pueden tener tipos con parámetros.
 
@@ -1804,7 +1895,7 @@ MyClass.Factory.sayHelloFromCompanion() // Invocar un método del 'companion'
 
 ### Destructuring data
 
-Los objetos pueden ser desestructurados en múltiples variables. Esta sintaxis se llama **'declaración de desestructuración'**. Una declaración de desestructuración crea múltiples variables a la vez.
+Los objetos pueden ser desestructurados en múltiples variables. Esta sintaxis se llama **declaración de desestructuración**. Una declaración de desestructuración crea múltiples variables a la vez.
 
 ```kotlin
 val (a, b, c) = fooCopy
@@ -2024,7 +2115,7 @@ println(smartCastExample(0)) // => false
 println(smartCastExample(true)) // => true
 ```
 
-La conversión inteligente ('smart cast') también funciona con bloques `when` o bucles `while`:
+La conversión inteligente (_'smart cast'_) también funciona con bloques `when` o bucles `while`:
 
 ```kotlin
 fun smartCastWhenExample(x: Any) = when (x) {
@@ -2035,11 +2126,11 @@ fun smartCastWhenExample(x: Any) = when (x) {
 }
 ```
 
-### Conversión explícita o 'Explicit Casting'
+### Conversión explícita o _'Explicit Casting'_
 
-Podemos usar el operador `as` (o el operador de conversión no segura o _'unsafe cast operator'_) para convertir explícitamente una referencia de un tipo a otro tipo en Kotlin.
+Podemos usar el operador `as` (o el operador de **conversión no segura** o _'unsafe cast operator'_) para convertir explícitamente una referencia de un tipo a otro tipo en Kotlin. Si la operación de conversión explícita es ilegal, tenga en cuenta que se lanzará una excepción de tipo _'ClassCastException'_.
 
-Si la operación de conversión explícita es ilegal, tenga en cuenta que se lanzará una excepción de tipo _'ClassCastException'_. Para evitar que se lance una excepción al realizar la conversión, podemos usar el operador de conversión seguro `as?`. Este operador intentará la conversión y si no se puede realizar la conversión devolverá 'null' en vez de lanzar la excepción.
+Para evitar que se lance una excepción al realizar la conversión, podemos usar el operador de **conversión seguro** `as?`. Este operador intentará la conversión y si no se puede realizar la conversión devolverá `'null'` en vez de lanzar la excepción. Por tanto la variable que contiene el resultado de una conversión segura debe ser capaz de mantener un resultado nulo:
 
 ```kotlin
 val circle = shape as Circle
@@ -2251,7 +2342,7 @@ fun foo(k: Int, value: Boolean) {
 
 ### Excepciones
 
-En Kotlin todas las excepciones son subclases de la clase _'Throwable'_. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene _'checked exceptions'_ a diferencia de Java, que realiza la distinción entre tipos de excepciones**.
+En Kotlin todas las excepciones son subclases de la clase `'Throwable'`. Cada excepción tiene un mensaje, un seguimiento de la pila y una causa opcional. **Kotlin no tiene _'checked exceptions'_ a diferencia de Java, que realiza la distinción entre tipos de excepciones**.
 
 Para lanzar un objeto de excepción, se utiliza la palabra clave `'throw'`:
 
@@ -3269,6 +3360,7 @@ PDF version: [Kotlin[ES].pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-
 * <https://gist.github.com/dodyg/5823184>
 * <https://gist.github.com/dodyg/5616605>
 * <https://github.com/Zhuinden/guide-to-kotlin>
+* <https://superkotlin.com/kotlin-mega-tutorial/>
 
 ### License
 
