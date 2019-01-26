@@ -574,7 +574,7 @@ val nigeriaCallingCodePair2 = Pair(234, "Nigeria") // Same as above
 
 ### Extension functions
 
-Las **funciones de extensión** o _'extension functions'_ son una forma de agregar nuevas funcionalidades a una clase sin tener que heredar de dicha clase. Esto es similar a los métodos de extensión de C#. Una función de extensión se declara fuera de la clase que quiere extender. En otras palabras, también es una función de nivel superior o _'top-level function'_. Junto con las funciones de extensión, Kotlin también admite propiedades de extensión.
+Las *__'extension functions'__* son una forma de agregar nuevas funcionalidades a una clase sin tener que heredar de dicha clase. Esto es similar a los métodos de extensión de C#. Una función de extensión se declara fuera de la clase que quiere extender. En otras palabras, también es una _'top-level function'_. Junto con las funciones de extensión, Kotlin también admite propiedades de extensión.
 
 Para crear una _'extension function'_, debe prefijar el nombre de la clase que está extendiendo antes del nombre de la función. El nombre de la clase o el tipo en el que se define la extensión se denomina **tipo de receptor**, y el **objeto receptor** es la instancia de clase o el valor concreto sobre el que se llama a la función de extensión.
 
@@ -610,18 +610,53 @@ C().foo(5) // => extension & overrided
 **Las funciones de nivel superior son funciones que se definen fuera de cualquier clase, objeto o interfaz**. Esto significa que son funciones a las que llama directamente, sin la necesidad de crear ningún objeto o llamar a ninguna clase. Dado que Java no soporta este tipo de funciones el compilador de Kotlin genera una clase con métodos estáticos. Estas tipo de funciones son especialmente útiles para crear funciones de utilidad o de ayuda.
 
 ```kotlin
-// Code defined inside a file called UserUtils.kt
-@file:JvmName("UserUtils") // Definir el nombre del fichero
-package com.chikekotlin.projectx.utils
+// Code defined inside a file called 'UserUtils.kt'
+@file:JvmName("UserUtils")
+package com.example.project.utils
 
 fun checkUserStatus(): String {
     return "online"
 }
 ```
 
+### High-Order Functions
+
+Las funciones en Kotlin son de primera clase, lo que significa que pueden ser almacenadas en variables y estructuras de datos, pasadas como argumentos y devueltas desde otras funciones de orden superior. Puede operar con funciones de cualquier manera que sea posible para otros valores no funcionales.
+
+Para facilitar esto, Kotlin, como lenguaje de programación estáticamente tipado, utiliza una familia de tipos de función para representar funciones y proporciona un conjunto de construcciones de lenguaje especializadas, tales como expresiones lambda.
+
+Una _'high-order function'_ o **función de orden superior** es una función que puede tomar funciones como parámetros y/o devolver una función como tipo de retorno.
+
+```kotlin
+// Función con dos parámetros, el segundo de ellos es una función
+fun foo(str: String, fn: (String) -> String): Unit {
+    val applied = fn(str)
+    println(applied)
+}
+foo("Hello", { it.reversed() }) // => olleH
+
+// Esta función de orden superior devuelve una función
+fun isPositive(n: Int): (Int) -> Boolean {
+    return { n > 0 } // return a function. Instead 'return value' we have 'return { function }'
+}
+
+// Esta función de orden superior devuelve una función de forma más compacta
+fun modulo(k: Int): (Int) -> Boolean = { it % k == 0 }
+
+val evens = listOf(1, 2, 3, 4, 5, 6).filter(modulo(2)) // => [2, 4, 6]
+
+// Asignar la función a una variable
+val isEven: (Int) -> Boolean = modulo(2)
+
+listOf(1, 2, 3, 4).filter(isEven) // => [2, 4]
+listOf(5, 6, 7, 8).filter(isEven) // => [6, 8]
+```
+
 ### Functions types & Lambdas
 
-Un tipo función es un tipo que consta de una firma de función, es decir, dos paréntesis que contiene la lista de parámetros (que son opcionales) y un tipo de retorno de función. Ambas partes están separados por el operador `'->'`.
+Un tipo función es un tipo que consta de una firma de función, es decir, dos paréntesis que contiene la lista de parámetros (que son opcionales) y un tipo de retorno. Ambas partes están separadas por el operador `'->'`.
+
+Cuando se define un tipo función, siempre se debe indicar explícitamente el tipo de retorno. Cuando se declaran funciones normales que devuelven `Unit`, se puede omitir el tipo de retorno ya que el compilador lo infiere, pero no se puede omitir en los tipos función. Además, debe poner los paréntesis para los parámetros, incluso cuando el tipo función no acepta ningún parámetro.
 
 ```kotlin
 fun executor(action:() -> Unit) {
@@ -643,26 +678,76 @@ fun executor(action:() -> Unit) {
 Debido a que un tipo función es solo un tipo, significa que puede asignar una función a una variable, puede pasarla como un argumento a otra función o puede devolverla desde una función tal y como suceden en las _`high-order functions'_:
 
 ```kotlin
-val morning: (String) -> Unit = { x -> println(x) }
-morning("good morning") // => good morning
+val saySomething: (String) -> Unit = { x -> println(x) }
+saySomething("Good morning") // => Good morning
 ```
 
-En particular, una **lambda** es una función literal: una función anónima que no se declara pero se usa directamente como una expresión.
+Una forma de instanciar una función tipo es usando el operador `'::'`. También podemos usar este operardor para pasar un tipo función como parámetro de otra función especificando su nombre con el operador y sin utilizar los paréntesis:
+
+```kotlin
+fun businessEmail(s: String): Boolean {
+    return s.contains("@") && s.contains("business.com")
+}
+isAnEmail(::businessEmail) // Invocar una 'high-order function' pasándole otra función por su nombre
+
+fun tell(text: String) {
+    println(text)
+}
+
+var saySomething: (String) -> Unit // La variable 'saySomething' es una variable de tipo función
+saySomething = ::tell // instanciar el tipo función y asignarlo a la variable 'saySomething'
+
+saySomething("Hello") //=> Hello
+```
+
+En particular, una **lambda es una función literal**: una función anónima que no se declara pero se usa directamente como una expresión.
 
 Básicamente, una lambda es un bloque de código que se puede pasar como cualquier otro literal (por ejemplo, simplemente como una cadena literal `"una cadena"`). La combinación de estas características permite a Kotlin soportar la programación funcional básica.
 
-Por ejemplo tenemos una función _'lambda'_ con dos parámetros:
+En el ejemplo una variable 'sum' de tipo función y a la que le asignamos directamente una función _'lambda'_ con dos parámetros:
 
 ```kotlin
+// Asignando una función 'lambda'
 val sum: (Int, Int) -> Int = { x, y -> x + y }
+sum(10, 20) // => 30
+
+// Equivalente usando el operador '::'
+fun operation(x: Int, y: Int): Int {
+    return x + y
+}
+val sum: (Int, Int) -> Int = ::operation
 sum(10, 20) // => 30
 ```
 
-Si una función _'lambda'_ tiene solo un parámetro, su declaración puede omitirse (junto con ->). El nombre del único parámetro será `'it'`.
+En Kotlin, por convención si una función _'lambda'_ tiene solo un parámetro, su declaración puede omitirse (junto con ->). El nombre del único parámetro será `'it'`.
 
 ```kotlin
 val isNegative: (Int) -> Boolean = { it < 0 } // este literal es del tipo '(it: Int) -> Boolean'
 isNegative(-5) // => true
+```
+
+Otra convención es que si el último parámetro de una función acepta una función, una expresión 'lambda' que es pasada como el argumento correspondiente se puede colocar **fuera de los paréntesis**:
+
+```kotlin
+// lambda expression inside parentheses
+val upperCaseLetters = "Hello World".filter({ it.isUpperCase() })
+
+// lambda outside parentheses
+val lowerCaseLetters = "Hello World".filter { it.isLowerCase() }
+
+println("$upperCaseLetters - $lowerCaseLetters") // => HW - elloorld
+```
+
+El siguiente ejemplo tenemos una función de orden superior que acepta una función lambda `{ (String) -> Boolean }` como parámetro. Se expresa como "acepta una función 'from String to Boolean'":
+
+```kotlin
+// El parámetro 'email' podemos usarlo como una función que acepta una cadena y devuelve un booleano.
+fun isAnEmail(email: (String) -> Boolean) {
+    email("myemail@example.com")
+}
+isAnEmail({ s: String -> s.contains("@") }) // forma completa
+isAnEmail { s: String -> s.contains("@") } // Los paréntesis son opcionales
+isAnEmail { it.contains("@") } // Uso de 'it'
 ```
 
 Para parámetros no utilizados se utiliza el operador `'_'`:
@@ -695,68 +780,6 @@ ints.filter(fun(item) = item > 0)
 ```
 
 La inferencia de tipo de retorno para funciones anónimas funciona igual que para las funciones normales: el tipo de retorno se deduce automáticamente para funciones anónimas con un cuerpo de expresión y debe especificarse explícitamente (o se supone que es `'Unit'`) para funciones anónimas con un cuerpo de bloque.
-
-### High-Order Functions
-
-Una _'high-order function'_ o **función de orden superior** es una función que puede tomar funciones como parámetros y/o devolver una función como tipo de retorno.
-
-```kotlin
-// Función con dos parámetros, uno de ellos es una función
-fun foo(str: String, fn: (String) -> String): Unit { // 2nd param is a function
-    val applied = fn(str)
-    println(applied)
-}
-foo("Hello", { it.reversed() }) // => olleH
-
-// Esta función de orden superior devuelve una función
-fun isPositive(n: Int): (Int) -> Boolean {
-    return { n > 0 } // return a function. In other words, instead 'return value' we have 'return { function }'
-}
-
-// Esta función de orden superior devuelve una función de forma más compacta
-fun modulo(k: Int): (Int) -> Boolean = { it % k == 0 }
-
-val evens = listOf(1, 2, 3, 4, 5, 6).filter(modulo(2)) // => [2, 4, 6]
-
-// Asignar la función a una variable
-val isEven: (Int) -> Boolean = modulo(2)
-
-listOf(1, 2, 3, 4).filter(isEven) // => [2, 4]
-listOf(5, 6, 7, 8).filter(isEven) // => [6, 8]
-```
-
-El siguiente ejemplo de función de orden superior acepta una función lambda `{ (String) -> Boolean }` como parámetro. Se expresa como "acepta una función 'from String to Boolean'":
-
-```kotlin
-// El parámetro 'email' podemos usarlo como una función que acepta una cadena y devuelve un booleano.
-fun isAnEmail(email: (String) -> Boolean) {
-    email("myemail@example.com")
-}
-isAnEmail({ s: String -> s.contains("@") }) // forma completa
-isAnEmail { s: String -> s.contains("@") } // Los paréntesis son opcionales
-isAnEmail { it.contains("@") } // Uso de 'it'
-```
-
-Para pasar una función como parámetro de otra función especificamos su nombre con el operador `'::'` y sin utilizar los paréntesis:
-
-```kotlin
-fun businessEmail(s: String): Boolean {
-    return s.contains("@") && s.contains("business.com")
-}
-isAnEmail(::businessEmail) // Invocar una 'high-order function' pasándole otra función por su nombre
-```
-
-En Kotlin, hay una convención de que si el último parámetro de una función acepta una función, una expresión 'lambda' que se pasa como el argumento correspondiente se puede colocar fuera de los paréntesis:
-
-```kotlin
-// lambda expression inside parentheses
-val upperCaseLetters = "Hello World".filter({ it.isUpperCase() })
-
-// lambda outside parentheses
-val lowerCaseLetters = "Hello World".filter { it.isLowerCase() }
-
-println("$upperCaseLetters - $lowerCaseLetters") // => HW - elloorld
-```
 
 ### Closures
 
