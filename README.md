@@ -3372,8 +3372,6 @@ print(a) // Prints: 10
 
 ---
 
-PDF version: [Kotlin[ES].pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-kotlin/master/Kotlin[ES].pdf)
-
 ## Reference
 
 * <https://kotlinlang.org/docs/reference/>
@@ -3385,7 +3383,7 @@ PDF version: [Kotlin[ES].pdf](https://raw.githubusercontent.com/alxgcrz/apuntes-
 * <https://github.com/Zhuinden/guide-to-kotlin>
 * <https://superkotlin.com/kotlin-mega-tutorial/>
 
-### License
+## License
 
 [![Licencia de Creative Commons](https://i.creativecommons.org/l/by-sa/4.0/80x15.png)](http://creativecommons.org/licenses/by-sa/4.0/)  
 Esta obra está bajo una [licencia de Creative Commons Reconocimiento-Compartir Igual 4.0 Internacional](http://creativecommons.org/licenses/by-sa/4.0/).
