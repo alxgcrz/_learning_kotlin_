@@ -1,16 +1,13 @@
 # Apuntes de [Kotlin]
 
-Compilar el código: `$ kotlinc name.kt -include-runtime -d name.jar`
+<https://kotlinlang.org/docs/tutorials/command-line.html>
 
-Ejecutar el programa: `$ java -jar name.jar`
-
-Ejecutar la consola 'REPL': `$ kotlinc-jvm`
-
-Usar la línea de comandos para ejecutar scripts (.kts): `$ kotlinc -script name.kts [params]`
-
-Compilar una biblioteca sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
-
-Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
+* Compilar la aplicación usando el compilador de Kotlin: `$ kotlinc name.kt -include-runtime -d name.jar`
+* Ejecutar el programa: `$ java -jar name.jar`
+* Ejecutar la consola 'REPL': `$ kotlinc-jvm`
+* Usar la línea de comandos para ejecutar scripts (.kts): `$ kotlinc -script name.kts [params]`
+* Compilar una biblioteca sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
+* Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
 ## Features
 
@@ -34,13 +31,15 @@ Kotlin es multiparadigma, con soporte para paradigmas de programación orientado
 
 ## Sintaxis básica
 
-El punto de entrada en un programa escrito en Kotlin (y en Java) es la función *__'main'__*. Esta función recibe un array que contiene los argumentos de la línea de comandos. Las funciones y variables en Kotlin pueden declararse en un **"nivel superior"**, es decir, directamente dentro de un paquete.
+El punto de entrada en un programa escrito en Kotlin (y en Java) es la función `main(args: Array<String>)`. Esta función recibe un array que contiene los argumentos de la línea de comandos.
 
 ```kotlin
 fun main(args: Array<String>) {
     println("Hello World!")
 }
 ```
+
+Las funciones y variables en Kotlin pueden declararse en un **"nivel superior"**, es decir, directamente dentro de un paquete.
 
 Si un archivo Kotlin contiene una sola clase (potencialmente con declaraciones de nivel superior relacionadas), su nombre debe ser el mismo que el nombre de la clase, con la extensión '.kt'. Si un archivo contiene varias clases, o solo declaraciones de nivel superior, el nombre debe describir lo que contiene el archivo en formato _'UpperCamelCase'_ (e.g. `ProcessDeclarations.kt`)
 
@@ -71,6 +70,8 @@ val USER_NAME_FIELD = "UserName"
 
 ### Variables y tipos básicos
 
+<https://kotlinlang.org/docs/reference/basic-types.html#basic-types>
+
 En Kotlin, **todo es un objeto** en el sentido de que podemos llamar funciones y propiedades de miembro en cualquier variable. Algunos de los tipos como los números, los caracteres o los booleanos pueden tener una representación interna especial que se representa como valores primitivos en tiempo de ejecución, pero para el usuario se comportan como clases ordinarias.
 
 La declaración de valores se realiza utilizando `var` o `val`:
@@ -83,40 +84,52 @@ La recomendación es crear valores constantes inmutables, que son más seguras e
 Este soporte de primera clase para los valores constantes es importante por una razón: la programación funcional. En la programación funcional, el uso de los valores constantes permiten algunas optimizaciones que aumentan el rendimiento. Por ejemplo, los cálculos pueden ser paralelos ya que existe una garantía de que el valor no cambiará entre dos ejecuciones paralelas, dado que no puede cambiar.
 
 ```kotlin
-val fooVal = 10 // val es inmutable y no se podrá ser reutilizada
+val fooVal = 10     // val es inmutable y no podrá ser reutilizada
+
 val otherVal
-otherVal = "My Value" // Podemos declar la variable 'val' en una línea y asignarle valor posteriormente. Sigue siendo una sola asignación.
+otherVal = "My Value"   // Podemos declarar la variable 'val' en una línea y asignarle valor posteriormente. Sigue siendo una sola asignación.
+
 var fooVar = 10
-fooVar = 20 // 'fooVar' se puede le puede asignar un nuevo valor pero únicamente del mismo tipo.
+fooVar = 20     // Se le puede asignar un nuevo valor pero únicamente del mismo tipo.
 ```
 
-En la mayoría de los casos, Kotlin puede determinar o inferir cuál es el tipo de una variable, por lo que no tenemos que especificarla explícitamente. Cuando la variable **no se inicialice deberemos indicar explícitamente el tipo de la variable**.
+En la mayoría de los casos, Kotlin puede determinar o inferir cuál es el tipo de una variable, por lo que no tenemos que especificarla explícitamente. Cuando la variable **no se inicialice deberemos indicar explícitamente el tipo de la variable** ya que Kotlin no puede inferir el tipo si no se inicializa.
 
 ```kotlin
 val foo: Int = 7
-val bar = 10 // Kotlin infiere automáticamente el tipo
-val hello: String // Si no se inicializa hay que especificar el tipo
+val bar = 10    // Kotlin infiere automáticamente el tipo
+val hello: String   // Si no se inicializa hay que especificar el tipo
 ```
 
-Kotlin proporciona los siguientes tipos que representan números:
+#### Numbers
+
+Kotlin proporciona los tipos `Byte`, `Short`, `Int` y `Long` para enteros y los tipos `Float` y `Double` para números en coma flotante:
 
 ```kotlin
-val double: Double = 64.0
-val float: Float = 32.0F // or 32f
+val double: Double = 64.0   // 64 bits
+val float: Float = 32.0F // or 32f (32 bits)
 
-val long: Long = 64L
-val int: Int = 32
-val short: Short = 16
+val long: Long = 64L    // 64 bits
+val int: Int = 32       // 32 bits
+val short: Short = 16   // 16 bits
 
-val byte: Byte = 8
+val byte: Byte = 8      // 8 bits
 val hexadecimal: Int = 0x16
 val binary: Int = 0b101
 val char: Char = 'a'
 ```
 
-A diferencia de Java, en Kotlin **todos los tipos son objetos** y por tanto no hay _'wrappers'_ u objetos envoltorio tipo `Integer`, `Double`, etc...
+Todas las variables inicializadas con un entero no deben exceder el tamaño máximo de `Int` ya que Kotlin infiere el tipo `Int` si no se especifica explícitamente el tipo o se añade el apéndice 'L' al valor. En el caso de números en coma flotante, Kotlin infiere el tipo `Double` si no se indica el tipo explícitamente o se marca el valor en coma flotante con el apéndice 'F'.
 
-Los caracteres no son números en Kotlin, a diferencia de Java. Los literales de cadena se escriben con comillas simples `'1'`. Los caracteres especiales se escapan con la barra invertida `'\'`
+```kotlin
+val a = 1   // Kotlin infiere el tipo 'Int'
+val b = 1L  // Kotlin infiere el tipo 'Long'
+
+val c = 3.14    // Kotlin infiere el tipo 'Double'
+val d = 2.7123F  // Kotlin infiere el tipo 'Float'
+```
+
+A diferencia de Java, en Kotlin **todos los tipos son objetos** y por tanto no hay _'wrappers'_ u objetos envoltorio tipo `Integer`, `Double`, etc...
 
 Los guiones bajos se pueden utilizar para hacer que los números grandes sean más legibles:
 
@@ -126,12 +139,40 @@ val million = 1_000_000
 
 La conversión debe ser invocada explícitamente. Hay conversiones desde un tipo al resto de tipos:
 
+* `toByte()`: Byte
+* `toShort()`: Short
+* `toInt()`: Int
+* `toLong()`: Long
+* `toFloat()`: Float
+* `toDouble()`: Double
+* `toChar()`: Char
+
 ``` kotlin
 val otherLong = int.toLong()
 val direct = 25.toLong()
 ```
 
-### Cadenas o _Strings_
+#### Characters
+
+<https://kotlinlang.org/docs/reference/basic-types.html#characters>
+
+Los caracteres no son números en Kotlin, a diferencia de Java. En Kotlin los caracteres se representan con el tipo `Char`:
+
+Los literales de carácter se escriben con comillas simples como por ejemplo `'a'`. Los caracteres especiales se escapan con la barra invertida `'\'`. Están soportadas las siguientes secuencias de escape: `\t`, `\b`, `\n`, `\r`, `\'`, `\"`, `\\`, `\$`.
+
+Podemos convertir de forma explícitia un carácter en un número de tipo `Int`:
+
+```kotlin
+fun decimalDigitValue(c: Char): Int {
+    if (c !in '0'..'9')
+        throw IllegalArgumentException("Out of range")
+    return c.toInt() - '0'.toInt() // Explicit conversions to numbers
+}
+```
+
+#### Strings
+
+<https://kotlinlang.org/docs/reference/basic-types.html#strings>
 
 Las cadenas son **secuencias de caracteres inmutables** y se representan con el tipo `String` de manera similar a Java. Las cadenas se crean usando las comillas dobles. El escapado de caracteres se hace con una barra invertida `'\'`.
 
@@ -146,7 +187,7 @@ println("John Doe"[2]) // => h
 println("John Doe".startsWith("J")) // => true
 ```
 
-Se puede acceder a los elementos de una cadena como si fuera un array (e.g. `s[i]`) e iterar con bucle tipo `for`:
+Se puede acceder a los elementos de una cadena como si fuera un array (e.g. `s[i]`) e iterar con un bucle tipo `for`:
 
 ```kotlin
 for (c in str) {
@@ -161,7 +202,7 @@ val s = "abc" + 1
 println(s + "def")
 ```
 
-Una cadena sin formato está delimitada por una comilla triple ("""). Las cadenas sin formato pueden contener nuevas líneas y cualquier otro carácter. Estas cadenas sin formato también tiene soporte para las _'string templates'_:
+Una cadena sin formato o _'raw string'_ está delimitada por una comilla triple ("""). Las cadenas sin formato pueden contener nuevas líneas y cualquier otro carácter. Estas cadenas sin formato también tiene soporte para las _'string templates'_:
 
 ```kotlin
 val fooRawString = """
@@ -173,7 +214,24 @@ val result = ${2 + 2}
 """
 ```
 
-Las cadenas pueden contener expresiones de plantilla o _'template expressions'_, también conocido como _'string interpolation'_. Una expresión de plantilla comienza con un signo de dólar (`$`). Estas _template expressions_ son una forma simple y efectiva de incrustar valores, variables o incluso expresiones dentro de una cadena que serán evaluadas y cuyo resultado se concatenará a la cadena resultante.
+Con la función `trimMargin()` podemos eliminar los espacios en blanco:
+
+```kotlin
+val text = """
+    |Tell me and I forget.
+    |Teach me and I remember.
+    |Involve me and I learn.
+    |(Benjamin Franklin)
+    """.trimMargin()
+```
+
+##### String templates
+
+<https://kotlinlang.org/docs/reference/basic-types.html#string-templates>
+
+Un literal de cadena puede contener expresiones de plantilla o _'template expressions'_, que son fragmentos de código que será evaluado y cuyo resultado será concatenado en la cadena. Son una forma simple y efectiva de incrustar valores, variables o incluso expresiones dentro de una cadena.
+
+Una expresión de plantilla comienza con un signo de dólar (`$`) y consisten en un nombre de una variable (por ejemplo `$i`) o en una expresión (como por ejemplo `${name.length}`) en cuyo caso se utilizan llaves (`{}`):
 
 ```kotlin
 val name = "John Doe"
@@ -183,27 +241,91 @@ val age = 40
 println("You are ${if (age > 60) "old" else "young"}") // => You are young
 ```
 
+Las plantillas son compatibles tanto dentro de cadenas sin procesar como dentro de cadenas escapadas. En caso de necesitar representar el literal del dólar en una cadena sin escapar se utiliza esta sintaxis:
+
+```kotlin
+val price = """
+${'$'}9.99
+"""
+```
+
+#### Arrays
+
+<https://kotlinlang.org/docs/reference/basic-types.html#arrays>
+
+Una matriz está representada por la clase `Array` y es **invariante**, por lo que, por ejemplo, no se puede asignar un `Array<String>` a un tipo de variable `Array<Any>`.
+
+En Kotlin, podemos crear una matriz de elementos del mismo tipo o de distinto tipo utilizando la función de biblioteca `arrayOf()` y pasándole los elementos a añadir:
+
+```kotlin
+val cardNames = arrayOf("Jack", "Queen", "King", 3, false)
+println(cardNames[1])   // => Queen
+```
+
+Podemos forzar la creación de arrays del mismo tipo. De esta forma el compilador comprobará el tipo de los elementos que se añaden y evitará que se añadan elementos de tipos no válidos:
+
+```kotlin
+val myArray = arrayOf<Int>(1, 2, 3, 4)
+println(myArray.contentToString()) // => [1, 2, 3, 4]
+```
+
+La biblioteca estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `intArrayOf()`, `longArrayOf()`, `charArrayOf()`, `doubleArrayOf()`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
+
+```kotlin
+val cards = intArrayOf(10, 11, 12) // IntArray
+println("${cards[1]}") // => 11
+```
+
+Para mejorar la eficiencia y rendimiento del código, cuando se utilicen tipos primitivos hay que utilizar las funciones `intArrayOf()`, `longArrayOf()`, etc.. en vez de `arrayOf()` para así evitar el coste asociado a las operaciones de _'boxing'/'unboxing'_.
+
+Alternativamente, podemos crear una matriz a partir de un tamaño inicial y una función, que se utiliza para generar cada elemento usando el constructor `Array()`:
+
+```kotlin
+val allCards = Array(12, { i -> i + 1 })
+println("${allCards.first()} - ${allCards.last()}") // => 1 - 12
+```
+
+Iterando sobre la matriz con `indices`:
+
+```kotlin
+for (index in cardNames.indices) {
+    println("Element $index is ${cardNames[index]}")
+}
+```
+
+Otra forma posible de iterar es usando la función `withIndex()`:
+
+```kotlin
+for ((index, value) in cardNames.withIndex()) {
+    println("$index - $value")
+}
+```
+
 ### Packages
+
+<https://kotlinlang.org/docs/reference/packages.html#packages>
 
 La palabra clave `package` funciona de la misma manera que en Java. El nombre del paquete se usa para construir el **"Fully Qualified Name"** (FQN) de una clase, objeto, interfaz o función.
 
-Los nombres de los '`packages`' se escriben en minúscula y sin guiones bajos.
+Todo el contenido (como clases y funciones) de un fichero fuente están contenidos en el paquete declarado. Los nombres de los paquetes se escriben en minúscula y sin guiones bajos:
 
 ```kotlin
 package com.example.kotlin
 
-class MyClass
+class MyClass { /*...*/ }
 
-fun saySomething(): String {
-    return "How far?"
-}
+fun saySomething(): String { /*...*/  }
 ```
 
-El FQN de la clase será '`com.example.kotlin.MyClass`'. Dado que podemos tener 'top-level functions' como en el ejemplo, el FQN de la función será '`com.example.kotlin.saySomething`'.
+En el ejemplo, el FQN de la clase será `com.example.kotlin.MyClass`.
+
+Dado que podemos tener _'top-level functions'_ como la función `saySomething()` del ejemplo, el FQN de esta función será `com.example.kotlin.saySomething`.
 
 Si no se especifica un paquete, el contenido del fichero fuente pertenece al paquete **'default'**.
 
 ### Imports
+
+<https://kotlinlang.org/docs/reference/packages.html#imports>
 
 En Kotlin, usamos la declaración de importación para permitir que el compilador localice las clases e interfaces, propiedades, enumeraciones, funciones y objetos que se importarán.
 
@@ -234,6 +356,8 @@ Multi-line comments look like this.
 ```
 
 ### Control de flujo y bucles
+
+<https://kotlinlang.org/docs/reference/control-flow.html#control-flow-if-when-for-while>
 
 Kotlin tiene 4 construcciones de control de flujo: `if`, `when`, `for` y `while`.  `if` y `when` son expresiones, por lo que devuelven un valor; `for` y `when` son declaraciones, por lo que no devuelven un valor. `if` y `when` también se pueden utilizar como sentencias, es decir, se pueden utilizar de forma autónoma y sin devolver un valor.
 
@@ -294,7 +418,7 @@ var top = if (a > 5) {
 }
 ```
 
-Los bloques `when` se pueden usar como una alternativa a las cadenas `if-else-if` o en substitución de los `switch`:
+Los bloques `when` se pueden usar como una alternativa a las cadenas `if-else-if` o en substitución de los `switch`. Si no se proporciona ningún argumento, las condiciones de la rama son simplemente expresiones booleanas, y una rama se ejecuta cuando su condición es verdadera:
 
 ```kotlin
 when {
@@ -307,11 +431,12 @@ when {
 La instrucción `when` se puede usar con un argumento. Si ninguna de las opciones coincide con el argumento, se ejecuta la opción del bloque `else`:
 
 ```kotlin
-when (i) {
-    0, 21 -> println("0 or 21")
-    in 1..20 -> println("in the range 1 to 20")
-    !in 22..25 -> println("not in the range 22 to 25")
-    else -> println("none of the above")
+when (x) {
+    1 -> print("x == 1")
+    2 -> print("x == 2")
+    else -> {
+        println("none of the above") // Nótese el uso de llaves para delimitar el bloque de código
+    }
 }
 ```
 
@@ -326,8 +451,7 @@ val result = when (i) {
 println(result)
 
 val check = true
-// All results are covered
-val result = when(check) {
+val result = when(check) {   // All results are covered
     true -> println("it's true")
     false -> println("it's false")
 }
@@ -336,78 +460,29 @@ val result = when(check) {
 Se pueden utilizar expresiones arbitrarias, y no solo constantes, como condiciones en los bloques:
 
 ```kotlin
-var result = when(number) {
-    0 -> "Invalid number"
-    1, 2 -> "Number too low"
-    3 -> "Number correct"
-    in 4..10 -> "Number too high, but acceptable"
-    !in 100..Int.MAX_VALUE -> "Number too high, but solvable"
-    else -> "Number too high"
+when (x) {
+    parseInt(s) -> print("s encodes x")
+    else -> print("s does not encode x")
 }
 ```
 
-Lo que no puede hacer es usar condiciones que devuelven tipos incompatibles. En una condición, puede usar una función que acepte cualquier argumento, pero debe devolver un tipo compatible con el tipo del argumento de la construcción `when`:
+Si muchos casos deben manejarse de la misma manera, las condiciones de la rama pueden combinarse con una coma:
 
 ```kotlin
-var result = when(number) {
-    0 -> "Invalid number"
-    // OK: check returns an Int
-    check(number) -> "Valid number"
-    // OK: check returns an Int, even though it accepts a String argument
-    checkString(text) -> "Valid number"
-    // ERROR: not valid
-    false -> "Invalid condition"
-    else -> "Number too high"
+when (x) {
+    0, 1 -> print("x == 0 or x == 1")
+    else -> print("otherwise")
 }
 ```
 
-### Arrays
-
-Una matriz está representada por la clase `Array` y es **invariante**, por lo que, por ejemplo, no se puede asignar un `Array<String>` a un tipo de variable `Array<Any>`.
-
-En Kotlin, podemos crear una matriz de elementos del mismo tipo o distinto utilizando la función de biblioteca `arrayOf()`:
+También podemos verificar si un valor está dentro `in` o no está dentro `!in` de un rango o una colección:
 
 ```kotlin
-val cardNames = arrayOf("Jack", "Queen", "King", 3, false)
-println(cardNames[1]) // => Queen
-```
-
-Podemos forzar la creación de arrays del mismo tipo. De esta forma el compilador comprobará y evitará que se añadan elementos de otro tipo.
-
-```kotlin
-val myArray = arrayOf<Int>(1, 2, 3, 4)
-println(myArray.contentToString()) // => [1, 2, 3, 4]
-```
-
-La biblioteca estándar de Kotlin provee funciones para crear arrays de tipos primitivos como `'intArrayOf()'`, `'longArrayOf()'`, `'charArrayOf()'`, `'doubleArrayOf()'`, etc... Cada una de estas funciones devuelven una instancia de su equivalente en Kotlin como `IntArray`, `LongArray`, `CharArray`, `DoubleArray`, etc...:
-
-```kotlin
-val cards = intArrayOf(10, 11, 12) // IntArray
-println("${cards[1]}") // => 11
-```
-
-Para mejorar la eficiencia y rendimiento del código, cuando se utilicen tipos primitivos hay que utilizar las funciones `'intArrayOf()'`, `'longArrayOf()'`, etc.. en vez de `'arrayOf()'` para así evitar el coste asociado a las operaciones de 'boxing'/'unboxing'.
-
-Alternativamente, podemos crear una matriz a partir de un tamaño inicial y una función, que se utiliza para generar cada elemento usando el constructor `'Array()'`:
-
-```kotlin
-val allCards = Array(12, { i -> i + 1 })
-println("${allCards.first()} - ${allCards.last()}") // => 1 - 12
-```
-
-Iterando sobre la matriz con `indices`:
-
-```kotlin
-for (index in cardNames.indices) {
-    println("Element $index is ${cardNames[index]}")
-}
-```
-
-Otra forma posible de iterar es usando `'withIndex()'`:
-
-```kotlin
-for ((index, value) in cardNames.withIndex()) {
-    println("$index - $value")
+when (x) {
+    in 1..10 -> print("x is in the range")
+    in validNumbers -> print("x is valid")
+    !in 10..20 -> print("x is outside the range")
+    else -> print("none of the above")
 }
 ```
 
@@ -3032,9 +3107,23 @@ try {
 
 ## Summary
 
-### BASICS
+### Basics
 
-#### "Hello World" program
+#### Package definition and imports
+
+Package specification should be at the top of the source file:
+
+```kotlin
+package my.demo
+
+import kotlin.text.*
+
+// ...
+```
+
+#### Entry point
+
+An entry point of a Kotlin application is the `main()` function:
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -3042,44 +3131,102 @@ fun main(args: Array<String>) {
 }
 ```
 
-#### Declaring function
+#### Comments
+
+Just like most modern languages, Kotlin supports single-line (or end-of-line) and multi-line (block) comments:
 
 ```kotlin
-fun sum(a: Int, b: Int): Int {
-    return a + b
-}
-```
+// This is an end-of-line comment
 
-#### Single-expression function
-
-```kotlin
-fun sum(a: Int, b: Int) = a + b
+/* This is a block comment
+   on multiple lines. */
 ```
 
 #### Declaring variables
 
+Read-only local variables are defined using the keyword `val`. They can be assigned a value only once:
+
 ```kotlin
-val name = ”Marcin” // Can't be changed
-var age = 5 // Can be changed
-age++
+val a: Int = 1  // immediate assignment
+val b = 2   // `Int` type is inferred
+val c: Int  // Type required when no initializer is provided
+c = 3       // deferred assignment
 ```
 
-#### Variables with nullable types
+Variables that can be reassigned use the `var` keyword:
+
+```kotlin
+var x = 5 // `Int` type is inferred
+x += 1
+```
+
+Top-level variables:
+
+```kotlin
+val PI = 3.14
+var x = 0
+
+fun incrementX() {
+    x += 1
+}
+```
+
+#### Nullable values and null checks
+
+A reference must be explicitly marked as nullable when `null` value is possible.
 
 ```kotlin
 var name: String? = null
+
 val length: Int
-length = name?.length ?: 0
-// length, or 0 if name is null
-length = name?.length ?: return
-// length, or return when name is null
-length = name?.length ?: throw Error()
-// length, or throw error when name is null
+length = name?.length ?: 0      // length, or 0 if name is null
+length = name?.length ?: return     // length, or return when name is null
+length = name?.length ?: throw Error()      // length, or throw error when name is null
 ```
 
-### CONTROL STRUCTURES
+Return `null` if `str` does not hold an integer:
+
+```kotlin
+fun parseInt(str: String): Int? {
+    // ...
+}
+```
+
+Use a function returning nullable value:
+
+```kotlin
+fun printProduct(arg1: String, arg2: String) {
+    val x = parseInt(arg1)
+    val y = parseInt(arg2)
+
+    // Using `x * y` yields error because they may hold nulls.
+    if (x != null && y != null) {
+        // x and y are automatically cast to non-nullable after null check
+        println(x * y)
+    }
+    else {
+        println("'$arg1' or '$arg2' is not a number")
+    }
+}
+```
+
+#### String templates
+
+```kotlin
+var a = 1
+// simple name in template:
+val s1 = "a is $a"
+
+a = 2
+// arbitrary expression in template:
+val s2 = "${s1.replace("is", "was")}, but now is $a"
+```
+
+### Control Flow
 
 #### 'If' as an expression
+
+In Kotlin, `if` can also be used as an expression:
 
 ```kotlin
 fun bigger(a: Int, b: Int) = if (a > b) a else b
@@ -3088,9 +3235,27 @@ fun bigger(a: Int, b: Int) = if (a > b) a else b
 #### 'For' loop
 
 ```kotlin
-val list = listOf("A", "B", "C")
-for (element in list) {
-    println(element)
+val items = listOf("apple", "banana", "kiwifruit")
+for (item in items) {
+    println(item)
+}
+```
+
+```kotin
+val items = listOf("apple", "banana", "kiwifruit")
+for (index in items.indices) {
+    println("item at $index is ${items[index]}")
+}
+```
+
+#### 'While' loop
+
+```kotlin
+val items = listOf("apple", "banana", "kiwifruit")
+var index = 0
+while (index < items.size) {
+    println("item at $index is ${items[index]}")
+    index++
 }
 ```
 
@@ -3106,6 +3271,17 @@ fun numberTypeName(x: Number) = when(x) {
 }
 ```
 
+```kotlin
+fun describe(obj: Any): String =
+    when (obj) {
+        1          -> "One"
+        "Hello"    -> "Greeting"
+        is Long    -> "Long"
+        !is String -> "Not a string"
+        else       -> "Unknown"
+    }
+```
+
 #### 'When' expression with predicates
 
 ```kotlin
@@ -3116,7 +3292,84 @@ fun signAsString(x: Int)= when {
 }
 ```
 
-### CLASSES
+### Functions
+
+#### Declaring function
+
+Function having two `Int` parameters with `Int` return type:
+
+```kotlin
+fun sum(a: Int, b: Int): Int {
+    return a + b
+}
+```
+
+#### Single-expression function
+
+Function with an expression body and inferred return type:
+
+```kotlin
+fun sum(a: Int, b: Int) = a + b
+```
+
+#### Return 'Unit'
+
+Function returning no meaningful value:
+
+```kotlin
+fun printSum(a: Int, b: Int): Unit {
+    println("sum of $a and $b is ${a + b}")
+}
+```
+
+`Unit` return type can be omitted:
+
+```kotlin
+fun printSum(a: Int, b: Int) {
+    println("sum of $a and $b is ${a + b}")
+}
+```
+
+#### Function types
+
+`() -> Unit` - takes no arguments and returns nothing (Unit).
+`(Int, Int) -> Int` - takes two arguments of type Int and returns Int.
+`(() -> Unit) -> Int` - takes another function and returns Int.
+`(Int) -> () -> Unit` - takes argument of type Int and returns function.
+
+#### Function literals
+
+```kotlin
+// Simple lambda expression
+val add: (Int, Int) -> Int = { i, j -> i + j }
+
+val printAndDouble: (Int) -> Int = {
+    println(it)
+    // When single parameter, we can reference it using `it`
+    it * 2 // In lambda, last expression is returned
+}
+
+// Anonymous function alternative
+val printAndDoubleFun: (Int) -> Int = fun(i: Int): Int {
+    println(i) // Single argument can’t be referenced by `it`
+    return i * 2 // Needs return like any function
+}
+
+val i = printAndDouble(10) // 10
+print(i) // 20
+```
+
+#### Extension functions
+
+```kotlin
+fun Int.isEven() = this % 2 == 0
+print(2.isEven()) // true
+
+fun List<Int>.average() = 1.0 * sum() / size
+print(listOf(1, 2, 3, 4).average()) // 2.5
+```
+
+### Classes
 
 #### Primary constructor
 
@@ -3180,7 +3433,7 @@ print("$name $age") // Mike 23
 val jake = mike.copy(name = "Jake")
 ```
 
-### COLLECTION LITERALS
+### Collection Literals
 
 ```kotlin
 listOf(1,2,3,4) // List<Int>
@@ -3203,7 +3456,7 @@ List(4) { it * 2 } // List<Int>
 generateSequence(4) { it + 2 } // Sequence<Int>
 ```
 
-### COLLECTION PROCESSING
+### Collection Processing
 
 ```kotlin
 students
@@ -3283,7 +3536,7 @@ println(sortResult) // kotlin.Unit
 println(list) // [1, 2, 3, 4]
 ```
 
-### EXTENSION FUNCTIONS TO ANY OBJECT
+### Extension Functions
 
 |                               | Returns 'Receiver' | Returns 'Results of lambda' |
 | :---------------------------- | :----------------: | :-------------------------: |
@@ -3297,48 +3550,7 @@ val dialog = Dialog().apply {
 }
 ```
 
-### FUNCTIONS
-
-#### Function types
-
-`() -> Unit` - takes no arguments and returns nothing (Unit).
-`(Int, Int) -> Int` - takes two arguments of type Int and returns Int.
-`(() -> Unit) -> Int` - takes another function and returns Int.
-`(Int) -> () -> Unit` - takes argument of type Int and returns function.
-
-#### Function literals
-
-```kotlin
-// Simple lambda expression
-val add: (Int, Int) -> Int = { i, j -> i + j }
-
-val printAndDouble: (Int) -> Int = {
-    println(it)
-    // When single parameter, we can reference it using `it`
-    it * 2 // In lambda, last expression is returned
-}
-
-// Anonymous function alternative
-val printAndDoubleFun: (Int) -> Int = fun(i: Int): Int {
-    println(i) // Single argument can’t be referenced by `it`
-    return i * 2 // Needs return like any function
-}
-
-val i = printAndDouble(10) // 10
-print(i) // 20
-```
-
-#### Extension functions
-
-```kotlin
-fun Int.isEven() = this % 2 == 0
-print(2.isEven()) // true
-
-fun List<Int>.average() = 1.0 * sum() / size
-print(listOf(1, 2, 3, 4).average()) // 2.5
-```
-
-### DELEGATES
+### Delegates
 
 ```kotlin
 // Lazy - calculates value before rst usage
@@ -3361,7 +3573,7 @@ val a by map
 print(a) // Prints: 10
 ```
 
-### VISIBILITY MODIFIERS
+### Visibility Modifiers
 
 |     Modifier     |               Class members                       |        Top-level           |
 | :--------------- | :------------------------------------------------ | :------------------------- |
