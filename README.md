@@ -1,5 +1,9 @@
 # Apuntes de [Kotlin]
 
+**Proyecto archivado.** Nueva localización en [apuntes-general](https://github.com/alxgcrz/apuntes-general).
+
+----
+
 <https://kotlinlang.org/docs/tutorials/command-line.html>
 
 * Compilar la aplicación usando el compilador de Kotlin: `$ kotlinc name.kt -include-runtime -d name.jar`
@@ -2418,7 +2422,7 @@ La función `'use'` es similar a la declaración `'try-with-resources'` presente
 
 Kotlin proporciona un conjunto de funciones que nos permiten agregar una cantidad limitada de **especificaciones formales** a nuestro código. Una especificación formal es una aserción que siempre debe ser verdadera o falsa en la ubicación cuando se ejecuta la aserción. Estos también se conocen como contratos o diseño por contrato:
 
-* _`require()'` y `'requireNotNull()'` lanza una excepción de tipo _'IllegalArgumentException'_ y se utiliza para garantizar que los argumentos cumplan el contrato.
+* `'require()'` y `'requireNotNull()'` lanza una excepción de tipo _'IllegalArgumentException'_ y se utiliza para garantizar que los argumentos cumplan el contrato.
 * `'assert()'` lanza una excepción _'AssertionException'_ y se utiliza para garantizar que nuestro estado interno es consistente.
 * `'check()'` y `'error()'` lanza una excepción _'IllegalStateException'_ y también se usa para mantener la consistencia del estado interno.
 
@@ -3103,7 +3107,7 @@ try {
 }
 ```
 
----
+----
 
 ## Summary
 
@@ -3582,7 +3586,7 @@ print(a) // Prints: 10
 | Protected        | Visible only in the sambe class and subclasses    | Not allowed                |
 | Internal         | Visible in the same module if class is accessible | Visible in the same module |
 
----
+----
 
 ## Reference
 
