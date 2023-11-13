@@ -1,10 +1,34 @@
 # Apuntes de [Kotlin]
 
-**Proyecto archivado.** Nueva localización en [apuntes-general](https://github.com/alxgcrz/apuntes-general).
+Kotlin es un lenguaje de programación de código abierto de tipo estático que se dirige a JVM, Android, JavaScript y Native. Está desarrollado por JetBrains. El proyecto se inició en 2010 y fue de código abierto desde muy temprano. El primer lanzamiento oficial 1.0 fue en febrero de 2016.
 
-----
+## Características
 
-<https://kotlinlang.org/docs/tutorials/command-line.html>
+Un lenguaje de programación se diseña generalmente con un propósito específico en mente. Este propósito puede ser cualquier cosa, desde servir a un entorno específico (por ejemplo, la web) hasta un determinado paradigma (por ejemplo, la programación funcional). En el caso de **Kotlin** el objetivo es construir un lenguaje productivo y pragmático, que tenga todas las características que un desarrollador necesita y que sea fácil de usar.
+
+Kotlin fue diseñado inicialmente para trabajar con otros lenguajes de JVM, pero ahora ha evolucionado para ser mucho más: también funciona en el navegador y como una aplicación nativa.
+
+Kotlin es multiparadigma, con soporte para paradigmas de programación orientada a objetos, procedimentales y funcionales, sin forzar el uso de ninguno de ellos. Por ejemplo, a diferencia de Java, puede definir funciones de nivel superior, sin tener que declararlas dentro de una clase.
+
+* 100% interoperable con Java.
+* 100% compatible con Java 6, por lo que puede crear aplicaciones para la mayoría de los dispositivos Android.
+* Se ejecuta en la JVM, puede transpilarse (traducirse) a JavaScript e incluso puede ejecutarse de forma nativa, con interoperabilidad con las bibliotecas C y Objective-C (macOs e iOS).
+* No hay necesidad de terminar las frases con punto y coma `;`. Los bloques de código están delimitados por corchetes `{ }`.
+* Soporte de primera clase para valores constantes y colecciones inmutables (ideal para programación paralela y funcional).
+* Las funciones pueden ser elementos de nivel superior (es decir, no hay necesidad de poner todo dentro de una clase).
+* Las funciones son ciudadanos de primera clase: pueden transmitirse como cualquier otro tipo y utilizarse como argumento de las funciones. Lambda (es decir, funciones anónimas) son muy compatibles con la biblioteca estándar.
+* No hay una palabra clave `static`, sino que hay mejores alternativas.
+* Clases de datos son clases especiales diseñadas para contener datos.
+* Todo es una expresión: `if`, `for`, etc... Todos pueden devolver valores.
+* La expresión `when` es como un interruptor con superpoderes.
+
+Más información:
+
+<https://kotlinlang.org/docs/reference/comparison-to-java.html>  
+<https://kotlinlang.org/docs/reference/server-overview.html>  
+<https://kotlinlang.org/docs/reference/evolution/kotlin-evolution.html>  
+
+## Kotlin en línea de comandos
 
 * Compilar la aplicación usando el compilador de Kotlin: `$ kotlinc name.kt -include-runtime -d name.jar`
 * Ejecutar el programa: `$ java -jar name.jar`
@@ -13,25 +37,9 @@
 * Compilar una biblioteca sin la 'runtime' para ser usada en otros programas: `$ kotlinc name.kt -d name.jar`
 * Ejecutar binarios producidos por el compilador de Kotlin: `$ kotlin -classpath name.jar HelloKt (HelloKt is the main class name inside the file named name.kt)`
 
-## Features
+Más información:
 
-Un lenguaje de programación se diseña generalmente con un propósito específico en mente. Este propósito puede ser cualquier cosa, desde servir a un entorno específico (por ejemplo, la web) hasta un determinado paradigma (por ejemplo, la programación funcional). En el caso de **Kotlin** el objetivo es construir un lenguaje productivo y pragmático, que tenga todas las características que un desarrollador necesita y que sea fácil de usar.
-
-Kotlin fue diseñado inicialmente para trabajar con otros lenguajes de JVM, pero ahora ha evolucionado para ser mucho más: también funciona en el navegador y como una aplicación nativa.
-
-Kotlin es multiparadigma, con soporte para paradigmas de programación orientados a objetos, procedimentales y funcionales, sin forzar el uso de ninguno de ellos. Por ejemplo, a diferencia de Java, puede definir funciones como de nivel superior, sin tener que declararlas dentro de una clase.
-
-* 100% interoperable con Java
-* 100% compatible con Java 6, por lo que puede crear aplicaciones para la mayoría de los dispositivos Android
-* Se ejecuta en la JVM, puede transpilarse (traducirse) a JavaScript e incluso puede ejecutarse de forma nativa, con interoperabilidad con las bibliotecas C y Objective-C (macOs e iOS).
-* No hay necesidad de terminar las frases con punto y coma `;`. Los bloques de código están delimitados por corchetes `{ }`
-* Soporte de primera clase para valores constantes y colecciones inmutables (ideal para programación paralela y funcional)
-* Las funciones pueden ser elementos de nivel superior (es decir, no hay necesidad de poner todo dentro de una clase).
-* Las funciones son ciudadanos de primera clase: pueden transmitirse como cualquier otro tipo y utilizarse como argumento de las funciones. Lambda (es decir, funciones anónimas) son muy compatibles con la biblioteca estándar
-* No hay una palabra clave `static`, sino que hay mejores alternativas
-* Clases de datos, clases especiales diseñadas para contener datos
-* Todo es una expresión: `if`, `for`, etc. todos pueden devolver valores
-* La expresión `when` es como un interruptor con superpoderes
+<https://kotlinlang.org/docs/tutorials/command-line.html>  
 
 ## Sintaxis básica
 
@@ -653,7 +661,7 @@ val nigeriaCallingCodePair2 = Pair(234, "Nigeria") // Same as above
 
 ### Extension functions
 
-Las *__'extension functions'__* son una forma de agregar nuevas funcionalidades a una clase sin tener que heredar de dicha clase. Esto es similar a los métodos de extensión de C#. Una función de extensión se declara fuera de la clase que quiere extender. En otras palabras, también es una _'top-level function'_. Junto con las funciones de extensión, Kotlin también admite propiedades de extensión.
+Las **_'extension functions'_** son una forma de agregar nuevas funcionalidades a una clase sin tener que heredar de dicha clase. Esto es similar a los métodos de extensión de C#. Una función de extensión se declara fuera de la clase que quiere extender. En otras palabras, también es una _'top-level function'_. Junto con las funciones de extensión, Kotlin también admite propiedades de extensión.
 
 Para crear una _'extension function'_, debe prefijar el nombre de la clase que está extendiendo antes del nombre de la función. El nombre de la clase o el tipo en el que se define la extensión se denomina **tipo de receptor**, y el **objeto receptor** es la instancia de clase o el valor concreto sobre el que se llama a la función de extensión.
 
@@ -862,7 +870,7 @@ La inferencia de tipo de retorno para funciones anónimas funciona igual que par
 
 ### Closures
 
-Un *__'closure'__* es una función que tiene acceso a variables y parámetros que se definen en un ámbito externo. A diferencia de Java, las variables 'capturadas' pueden ser modificadas.
+Un **_'closure'_** es una función que tiene acceso a variables y parámetros que se definen en un ámbito externo. A diferencia de Java, las variables 'capturadas' pueden ser modificadas.
 
 ```kotlin
 fun printFilteredNamesByLength(length: Int) {
@@ -921,7 +929,7 @@ class Student {
 val student = Student()
 student addKotlinScore 95.00 // Invocando la función usando la notación 'infix'
 student.addKotlinScore(95) // Invocando la función con notación normal
-```
+````
 
 ### Inline functions
 
@@ -1174,7 +1182,7 @@ Las propiedades pueden ser **'private'**, **'protected'**, o **'public'** (visib
 
 #### Backing Fields
 
-El campo de respaldo o *__'backing field'__* es un campo generado automáticamente para cualquier propiedad que solo puede usarse dentro de los accesores (getter o setter).
+El campo de respaldo o **_'backing field'_** es un campo generado automáticamente para cualquier propiedad que solo puede usarse dentro de los accesores (getter o setter).
 
 Estará presente solo si utiliza la implementación predeterminada de al menos uno de los accesores, o si un descriptor de acceso personalizado lo hace referencia a través del identificador `'field'`. Este campo de respaldo se usa para evitar la llamada recursiva y por tanto evitar un _'StackOverflowError'_.
 
@@ -1644,7 +1652,7 @@ val (result, status) = checkStatus() // usamos la desestructuración de datos pa
 
 ### Sealed classes
 
-En Kotlin una *__'sealed class'__* es una clase abstracta (no se puede crear instancias) que otras clases pueden extender. Estas subclases se definen dentro del cuerpo de la _'sealed class'_, en el mismo archivo por lo que podemos conocer todas las subclases posibles simplemente viendo el archivo.
+En Kotlin una **_'sealed class'_** es una clase abstracta (no se puede crear instancias) que otras clases pueden extender. Estas subclases se definen dentro del cuerpo de la _'sealed class'_, en el mismo archivo por lo que podemos conocer todas las subclases posibles simplemente viendo el archivo.
 
 Las _'sealed class'_ se utilizan para representar jerarquías de clases restringidas, de forma que una clase solo pueda heredar de un conjunto limidado de tipos. Son, en cierto sentido, una extensión de las clases de enumeración.
 
@@ -1665,13 +1673,13 @@ class Rectangle: Shape()
 
 ### Generics
 
-*__'Covariance'__* y *__'contravariance'__* son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten estos términos para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, se definen como:
+**_'Covariance'_** y **_'contravariance'_** son términos que hacen referencia a la capacidad de usar un tipo más derivado (más específico) o menos derivado (menos específico) que el indicado originalmente. Los parámetros de tipo genérico admiten estos términos para proporcionar mayor flexibilidad a la hora de asignar y usar tipos genéricos. Cuando se hace referencia a un sistema de tipos, se definen como:
 
-* *__'Covariance'__* -> Permite usar un tipo más derivado que el especificado originalmente. Puede asignar una instancia de `Class<Derived>` a una variable de tipo `Class<Base>`.
+* **_'Covariance'_** -> Permite usar un tipo más derivado que el especificado originalmente. Puede asignar una instancia de `Class<Derived>` a una variable de tipo `Class<Base>`.
 
-* *__'Contravariance'__* -> Permite usar un tipo más genérico (menos derivado) que el especificado originalmente. Puede asignar una instancia de `Class<Base>` a una variable de tipo `Class<Derived>`.
+* **_'Contravariance'_** -> Permite usar un tipo más genérico (menos derivado) que el especificado originalmente. Puede asignar una instancia de `Class<Base>` a una variable de tipo `Class<Derived>`.
 
-* *__'Invariance'__* -> Significa que solo se puede usar el tipo especificado originalmente. Así, un parámetro de tipo genérico invariable no es covariante ni contravariante. No se puede asignar una instancia de `List<Base>` a una variable de tipo `List<Derived>` o viceversa.
+* **_'Invariance'_** -> Significa que solo se puede usar el tipo especificado originalmente. Así, un parámetro de tipo genérico invariable no es covariante ni contravariante. No se puede asignar una instancia de `List<Base>` a una variable de tipo `List<Derived>` o viceversa.
 
 Al igual que en Java, en Kotlin las clases pueden tener tipos con parámetros.
 
@@ -2510,7 +2518,7 @@ Las **anotaciones** permiten a los desarrolladores agregar un significado adicio
 
 ### [@JvmStatic]
 
-Kotlin representa funciones de nivel de paquete (funciones fuera de una clase) como métodos estáticos. Kotlin también puede generar métodos estáticos para funciones definidas en *__'objects'__* y *__'companin objects'__* si anota esas funciones como `'@JvmStatic'`. Si usa esta anotación, el compilador generará tanto un método estático en la clase envolvente del objeto como un método de instancia en el propio objeto.
+Kotlin representa funciones de nivel de paquete (funciones fuera de una clase) como métodos estáticos. Kotlin también puede generar métodos estáticos para funciones definidas en **_'objects'_** y **_'companin objects'_** si anota esas funciones como `'@JvmStatic'`. Si usa esta anotación, el compilador generará tanto un método estático en la clase envolvente del objeto como un método de instancia en el propio objeto.
 
 ```kotlin
 class C {
@@ -2678,7 +2686,7 @@ Normalmente, para mantener ordenada la estructura del proyecto los ficheros de t
 
 Una especificación o _'spec'_ es simplemente la manera en que las pruebas se presentan en los archivos de clase. Hay varias especificaciones diferentes disponibles como **FunSpec**, **StringSpec+*, **ShouldSpec**. etc...
 
-La especificación **FunSpec** permite crear pruebas similares al estilo *jUnit*. Para escribir un test unitario invocamos la función _'test'_ que toma dos parámetros. El primer parámetro es una descripción de la prueba unitaria y el segundo es una función literal que contiene el cuerpo de la prueba. La descripción o nombre de la prueba aparecerá en la salida, así que permite saber que prueba/s han pasado la prueba y cuáles han fallado.
+La especificación **FunSpec** permite crear pruebas similares al estilo _jUnit_. Para escribir un test unitario invocamos la función _'test'_ que toma dos parámetros. El primer parámetro es una descripción de la prueba unitaria y el segundo es una función literal que contiene el cuerpo de la prueba. La descripción o nombre de la prueba aparecerá en la salida, así que permite saber que prueba/s han pasado la prueba y cuáles han fallado.
 
 ```kotlin
 class StringTestWithFunSpec : FunSpec() {
@@ -3107,7 +3115,7 @@ try {
 }
 ```
 
-----
+---
 
 ## Summary
 
@@ -3468,7 +3476,7 @@ students
  // Only passing students
  .sortedByDescending { it.averageGrade }
  // Starting from ones with biggest grades
- .take(10) // Take rst 10
+ .take(10) // Take first 10
  .sortedWith(compareBy({ it.surname }, { it.name }))
  // Sort by surname and then name
 
@@ -3476,7 +3484,7 @@ generateSequence(0) { it + 1 }
  // Infinitive sequence of next numbers starting on 0
  .filter { it % 2 == 0 } // Keep only even
  .map { it * 3 } // Triple every one
- .take(100) // Take rst 100
+ .take(100) // Take first 100
  .average() // Count average
 
 // Most important functions for collection processing
@@ -3511,7 +3519,7 @@ l.maxBy { -it } // 1
 
 // first/firstBy
 l.first() // 1
-l.first { it % 2 == 0 } // 2 (rst even number)
+l.first { it % 2 == 0 } // 2 (first even number)
 
 // count - count elements matched by predicate
 l.count { it % 2 == 0 } // 2
@@ -3557,7 +3565,7 @@ val dialog = Dialog().apply {
 ### Delegates
 
 ```kotlin
-// Lazy - calculates value before rst usage
+// Lazy - calculates value before first usage
 val i by lazy { print("init "); 10 }
 print(i) // Prints: init 10
 print(i) // Prints: 10
@@ -3571,7 +3579,7 @@ var name by observable("Unset") { p, old, new ->
 name = "Marcin"
 // Prints: name changed Unset -> Marcin
 
-// Map/MutableMap - nds value on map by property name
+// Map/MutableMap - finds value on map by property name
 val map = mapOf("a" to 10)
 val a by map
 print(a) // Prints: 10
@@ -3586,9 +3594,9 @@ print(a) // Prints: 10
 | Protected        | Visible only in the sambe class and subclasses    | Not allowed                |
 | Internal         | Visible in the same module if class is accessible | Visible in the same module |
 
-----
+---
 
-## Reference
+## Enlaces de interés
 
 * <https://kotlinlang.org/docs/reference/>
 * <https://code.tutsplus.com/series/kotlin-from-scratch--cms-1209>
@@ -3598,8 +3606,9 @@ print(a) // Prints: 10
 * <https://gist.github.com/dodyg/5616605>
 * <https://github.com/Zhuinden/guide-to-kotlin>
 * <https://superkotlin.com/kotlin-mega-tutorial/>
+* <https://www.youtube.com/playlist?list=PLSiK7eRzeVLts3w7rJd3bnEIcRps0pBN6>
 
-## License
+## Licencia
 
 [![Licencia de Creative Commons](https://i.creativecommons.org/l/by-sa/4.0/80x15.png)](http://creativecommons.org/licenses/by-sa/4.0/)  
 Esta obra está bajo una [licencia de Creative Commons Reconocimiento-Compartir Igual 4.0 Internacional](http://creativecommons.org/licenses/by-sa/4.0/).
