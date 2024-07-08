@@ -1,5 +1,4 @@
 ## Custom files
-*.bat
 *.html
 *.yaml
 .npmrc
