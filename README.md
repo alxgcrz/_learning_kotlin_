@@ -1,4 +1,4 @@
-# Apuntes de [Kotlin]
+# Kotlin
 
 Kotlin es un lenguaje de programación de código abierto de tipo estático que se dirige a JVM, Android, JavaScript y Native. Está desarrollado por JetBrains. El proyecto se inició en 2010 y fue de código abierto desde muy temprano. El primer lanzamiento oficial 1.0 fue en febrero de 2016.
 
@@ -3596,7 +3596,7 @@ print(a) // Prints: 10
 
 ---
 
-## Enlaces de interés
+## Referencias
 
 * <https://kotlinlang.org/docs/reference/>
 * <https://code.tutsplus.com/series/kotlin-from-scratch--cms-1209>
@@ -3606,7 +3606,6 @@ print(a) // Prints: 10
 * <https://gist.github.com/dodyg/5616605>
 * <https://github.com/Zhuinden/guide-to-kotlin>
 * <https://superkotlin.com/kotlin-mega-tutorial/>
-* <https://www.youtube.com/playlist?list=PLSiK7eRzeVLts3w7rJd3bnEIcRps0pBN6>
 
 ## Licencia
 
